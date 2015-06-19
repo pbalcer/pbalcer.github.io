@@ -8,7 +8,7 @@ By now you should be fairly familiar with the basics persistent memory programmi
 
 ### The lifecycle
 
-Transactions are managed by the usage of `pmemobj_tx_*` set of functions. A single transaction goes through a series of stages listed in `enum pobj_tx_stage` and illustrated by the following diagram:
+Transactions are managed by the usage of `pmemobj_tx_*` set of functions. A single transaction goes through a series of stages listed in `enum pobj_tx_stage` as illustrated by the following diagram:
 
 ![lifecycle](/assets/lifecycle.png)
 
@@ -76,7 +76,7 @@ Our library distinguishes 3 different transactional operations: allocation, free
 What this means is that when you call any of those two functions, a new object is allocated and the existing content of the memory range is copied into it. Most of the time that object will be then discarded, unless the library needs that old memory in the transaction rollback.
 Also, note that the library assumes that when you add the memory range you intend to write to it and the memory is automatically persisted when committing the transaction - so you don't have to call pmemobj_persist yourself.
 
-So how to use those functions? The `pmemobj_tx_add_range` takes a raw persistent memory pointer (PMEMoid), an offset from it and it's size. So let's set some values inside this structure:
+So how to use those functions? The `pmemobj_tx_add_range` takes a raw persistent memory pointer (PMEMoid), an offset from it and its size. So let's set some values inside this structure:
 
 	struct vector {
 		int x;
