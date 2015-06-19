@@ -14,7 +14,7 @@ The pmemobj library provides an interface to easily manage those pools, so that 
 
 ### Persistent pointers
 
-Now that we have the memory region mapped, how can one access it? Let's think about regular pointers for a second. Boiling it down to the very basics, a pointer is a number of bytes between the start of the virtual address space to the beginning of the thing it points to. And now to translate this to persistent memory, note here that you can have more then one pool open in one application, the persistent pointer is twice the size of a regular pointer and contains the offset from the start of the pool (not the VAS) and unique id of the pool. The structure itself looks like this:
+Now that we have the memory region mapped, how can one access it? Let's think about regular pointers for a second. Boiling it down to the very basics, a pointer is a number of bytes between the start of the virtual address space to the beginning of the thing it points to. And now to translate this to persistent memory, note here that you can have more than one pool open in one application, the persistent pointer is twice the size of a regular pointer and contains the offset from the start of the pool (not the VAS) and unique id of the pool. The structure itself looks like this:
 
 	typedef struct pmemoid {
 		uint64_t pool_uuid_lo;
@@ -31,7 +31,7 @@ Think about following scenario:
 	- write a string to it
 	- close the application
 
-How do you locate the pointer which contains your string? The data you want will be somewhere in the pool, but apart from scanning the entire file for matching characters you can't really find it. Unless you store the persistent pointer someplace you know in the pool, for example you could pick a random offset into the pool. But that would be wrong, like writing randomly in the virtual address space wrong, it would most likely unintentionally overwrite something. The known location you can always look for in the memory pool is the root object. It's the anchor to which all the memory structures can be attached. In a case where all you really need is one, not dynamically changing, data structure you can just solely rely on the root object. The `size` in the `pmemobj_root` function is the size of the structure you want as root object, so typically you might want to write something like this:
+How do you locate the pointer which contains your string? The data you want will be somewhere in the pool, but apart from scanning the entire file for matching characters you can't really find it. Unless you store the persistent pointer someplace you know in the pool, for example you could pick a random offset into the pool. But that would be wrong, like writing randomly in the virtual address space. It would most likely unintentionally overwrite something. The known location you can always look for in the memory pool is the root object. It's the anchor to which all the memory structures can be attached. In a case where all you really need is one, not dynamically changing, data structure you can just solely rely on the root object. The `size` in the `pmemobj_root` function is the size of the structure you want as root object, so typically you might want to write something like this:
 
 	PMEMoid root = pmemobj_root(pop, sizeof (struct my_root));
 
