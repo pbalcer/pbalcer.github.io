@@ -298,6 +298,36 @@
 <div class="grid-inner row g-0">
 <div class=col-md-4>
 <div class=entry-image>
+<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-5-atomic-dynamic-memory-allocation/ data-lightbox=image><img src=/images/pmem_logo.png alt="An introduction to pmemobj (part 5) - atomic dynamic memory allocation"></a>
+</div>
+</div>
+<div class="col-md-8 ps-md-4">
+<div class="entry-title title-sm">
+<h2><a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-5-atomic-dynamic-memory-allocation/>An introduction to pmemobj (part 5) - atomic dynamic memory allocation</a></h2>
+</div>
+<div class=entry-meta>
+<ul>
+<li><i class=icon-calendar3></i> Jun 18, 2015</li>
+<li><i class=icon-user></i>Pbalcer</li>
+<li>
+<i class=icon-folder-open></i>
+Pmemobj
+</li>
+</ul>
+</div>
+<div class=entry-content>
+<p>In the previous post I talked about using transactions for allocating new objects, which is fine and is the most similar approach to the standard POSIX way. But it does add an overhead of maintaining an undo log of changes. A more optimal memory management can be achieved using the non-transactional …</p>
+<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-5-atomic-dynamic-memory-allocation/ class=more-link>Read More</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id=posts class="row grid-container gutter-40">
+<div class="entry col-12">
+<div class="grid-inner row g-0">
+<div class=col-md-4>
+<div class=entry-image>
 <a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-6-threading/ data-lightbox=image><img src=/images/pmem_logo.png alt="An introduction to pmemobj (part 6) - threading"></a>
 </div>
 </div>
@@ -414,37 +444,6 @@ Pmemobj
 </div>
 </div>
 </div>
-<div id=posts class="row grid-container gutter-40">
-<div class="entry col-12">
-<div class="grid-inner row g-0">
-<div class=col-md-4>
-<div class=entry-image>
-<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/ data-lightbox=image><img src=/images/pmem_logo.png alt="An introduction to pmemobj (part 1) - accessing the persistent memory"></a>
-</div>
-</div>
-<div class="col-md-8 ps-md-4">
-<div class="entry-title title-sm">
-<h2><a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/>An introduction to pmemobj (part 1) - accessing the persistent memory</a></h2>
-</div>
-<div class=entry-meta>
-<ul>
-<li><i class=icon-calendar3></i> Jun 13, 2015</li>
-<li><i class=icon-user></i>Pbalcer</li>
-<li>
-<i class=icon-folder-open></i>
-Pmemobj
-</li>
-</ul>
-</div>
-<div class=entry-content>
-<p>In the previous post, you learned a little bit about the general concept of the persistent memory programming model, now it’s time to start the coding ;)
-Memory pools If you’ve read the overview you know that persistent memory is exposed by the OS as memory-mapped files, we call them …</p>
-<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/ class=more-link>Read More</a>
-</div>
-</div>
-</div>
-</div>
-</div>
 <div class="col-12 mt-4">
 <ul class="pagination pagination-default">
 <li class=page-item>
@@ -472,7 +471,7 @@ Memory pools If you’ve read the overview you know that persistent memory is ex
 <a href=/blog/page/15/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
 </li>
 <li class=page-item>
-<a href=/blog/page/16/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+<a href=/blog/page/17/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
 </li>
 </ul></div>
 </div>
@@ -511,7 +510,7 @@ Memory pools If you’ve read the overview you know that persistent memory is ex
 <h4 class="fw-normal mt-2"><a href=/blogs/nvm/ class=text-capitalize>nvm (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/perf300/ class=text-capitalize>perf300 (2)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/performance/ class=text-capitalize>performance (1)</a></h4>
-<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (6)</a></h4>
+<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (7)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem/ class=text-capitalize>pmem (4)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem.io/ class=text-capitalize>pmem.io (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem_emulation/ class=text-capitalize>pmem_emulation (1)</a></h4>
@@ -535,10 +534,14 @@ Memory pools If you’ve read the overview you know that persistent memory is ex
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
 <a href=/tags/imdb class=block role=button>imdb</a>
 <a href=/tags/kafka class=block role=button>kafka</a>
+<a href=/tags/memkind class=block role=button>memkind</a>
 <a href=/tags/oracle class=block role=button>oracle</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
 <a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
@@ -571,7 +574,7 @@ Memory pools If you’ve read the overview you know that persistent memory is ex
 <a href=https://pmem.io/terms.html>Terms</a>
 </div>
 <div class="col-lg-auto text-center mt-0">
-<p>Copyright &copy; 2021 pmem.io</p>
+<p>Copyright &copy; 2022 pmem.io</p>
 </div>
 </div>
 </div>

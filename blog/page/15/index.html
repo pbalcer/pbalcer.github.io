@@ -298,6 +298,37 @@
 <div class="grid-inner row g-0">
 <div class=col-md-4>
 <div class=entry-image>
+<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/ data-lightbox=image><img src=/images/pmem_logo.png alt="An introduction to pmemobj (part 1) - accessing the persistent memory"></a>
+</div>
+</div>
+<div class="col-md-8 ps-md-4">
+<div class="entry-title title-sm">
+<h2><a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/>An introduction to pmemobj (part 1) - accessing the persistent memory</a></h2>
+</div>
+<div class=entry-meta>
+<ul>
+<li><i class=icon-calendar3></i> Jun 13, 2015</li>
+<li><i class=icon-user></i>Pbalcer</li>
+<li>
+<i class=icon-folder-open></i>
+Pmemobj
+</li>
+</ul>
+</div>
+<div class=entry-content>
+<p>In the previous post, you learned a little bit about the general concept of the persistent memory programming model, now it’s time to start the coding ;)
+Memory pools If you’ve read the overview you know that persistent memory is exposed by the OS as memory-mapped files, we call them …</p>
+<a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-1-accessing-the-persistent-memory/ class=more-link>Read More</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id=posts class="row grid-container gutter-40">
+<div class="entry col-12">
+<div class="grid-inner row g-0">
+<div class=col-md-4>
+<div class=entry-image>
 <a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-0-new-programming-model/ data-lightbox=image><img src=/images/pmem_logo.png alt="An introduction to pmemobj (part 0) - new programming model"></a>
 </div>
 </div>
@@ -414,37 +445,6 @@ Translation
 </div>
 </div>
 </div>
-<div id=posts class="row grid-container gutter-40">
-<div class="entry col-12">
-<div class="grid-inner row g-0">
-<div class=col-md-4>
-<div class=entry-image>
-<a href=https://pmem.io/blog/2014/09/git-workflow/ data-lightbox=image><img src=/images/pmem_logo.png alt="Git Workflow"></a>
-</div>
-</div>
-<div class="col-md-8 ps-md-4">
-<div class="entry-title title-sm">
-<h2><a href=https://pmem.io/blog/2014/09/git-workflow/>Git Workflow</a></h2>
-</div>
-<div class=entry-meta>
-<ul>
-<li><i class=icon-calendar3></i> Sep 9, 2014</li>
-<li><i class=icon-user></i>Andyrudoff</li>
-<li>
-<i class=icon-folder-open></i>
-Git
-</li>
-</ul>
-</div>
-<div class=entry-content>
-<p>Now that we’ve created the GitHub Repository for the PMDK, here’s a more detailed description of the git workflow we’ve chosen. The basic idea is:
-Current development happens on the master branch Releases are created periodically by tagging After a major release, a stable-1.x …</p>
-<a href=https://pmem.io/blog/2014/09/git-workflow/ class=more-link>Read More</a>
-</div>
-</div>
-</div>
-</div>
-</div>
 <div class="col-12 mt-4">
 <ul class="pagination pagination-default">
 <li class=page-item>
@@ -452,9 +452,6 @@ Current development happens on the master branch Releases are created periodical
 </li>
 <li class=page-item>
 <a href=/blog/page/14/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a>
-</li>
-<li class=page-item>
-<a href=/blog/page/12/ aria-label="Page 12" class=page-link role=button>12</a>
 </li>
 <li class=page-item>
 <a href=/blog/page/13/ aria-label="Page 13" class=page-link role=button>13</a>
@@ -469,10 +466,13 @@ Current development happens on the master branch Releases are created periodical
 <a href=/blog/page/16/ aria-label="Page 16" class=page-link role=button>16</a>
 </li>
 <li class=page-item>
+<a href=/blog/page/17/ aria-label="Page 17" class=page-link role=button>17</a>
+</li>
+<li class=page-item>
 <a href=/blog/page/16/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
 </li>
 <li class=page-item>
-<a href=/blog/page/16/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+<a href=/blog/page/17/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
 </li>
 </ul></div>
 </div>
@@ -511,7 +511,7 @@ Current development happens on the master branch Releases are created periodical
 <h4 class="fw-normal mt-2"><a href=/blogs/nvm/ class=text-capitalize>nvm (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/perf300/ class=text-capitalize>perf300 (2)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/performance/ class=text-capitalize>performance (1)</a></h4>
-<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (6)</a></h4>
+<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (7)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem/ class=text-capitalize>pmem (4)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem.io/ class=text-capitalize>pmem.io (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem_emulation/ class=text-capitalize>pmem_emulation (1)</a></h4>
@@ -535,10 +535,14 @@ Current development happens on the master branch Releases are created periodical
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
 <a href=/tags/imdb class=block role=button>imdb</a>
 <a href=/tags/kafka class=block role=button>kafka</a>
+<a href=/tags/memkind class=block role=button>memkind</a>
 <a href=/tags/oracle class=block role=button>oracle</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
 <a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
@@ -571,7 +575,7 @@ Current development happens on the master branch Releases are created periodical
 <a href=https://pmem.io/terms.html>Terms</a>
 </div>
 <div class="col-lg-auto text-center mt-0">
-<p>Copyright &copy; 2021 pmem.io</p>
+<p>Copyright &copy; 2022 pmem.io</p>
 </div>
 </div>
 </div>
