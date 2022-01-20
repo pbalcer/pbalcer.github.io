@@ -406,7 +406,7 @@ memory will dependent on the type of media used in the device.
 So it&rsquo;s not impossible to imagine a scenario where there are three or even more
 memory types in a single system, all with different performance characteristics.</p>
 <p><img src=/images/posts/cxl-hierarchy.png alt="CXL hierarchy"></p>
-<p>Given that there might be many types of different memory in a system, there
+<p>Given that there might be many different types of memory in a system, there
 naturally needs to be something that will let software identify the performance
 characteristics of those devices. Luckily, that something already exists. It&rsquo;s
 called Heterogeneous Memory Attribute Table (HMAT), and it&rsquo;s part of the ACPI spec.
@@ -419,11 +419,11 @@ to user-space software.</p>
 an <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>earlier article</a> [8] on pmem.io.</p>
 <h2 id=implications-for-software>Implications for software</h2>
 <p>Armed with this knowledge, software should then be able to make informed data
-placement decisions - which memory allocations go where.
+placement decisions about which allocations go to which memory.
 But how? And, better yet, why? Wouldn&rsquo;t it be better for some lower-level
 abstraction to handle this transparently for applications?</p>
 <p>And to the extent that transparent data placement is possible, I agree.
-But there to some caveats, in my opinion.</p>
+But there are some caveats, in my opinion.</p>
 <p>First, making decisions about data placement is mostly about predicting the
 system&rsquo;s future behavior. The lower in the stack we make those decisions,
 the less information is available for predictions. And sure, cache
