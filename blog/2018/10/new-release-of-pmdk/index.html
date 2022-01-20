@@ -1,5 +1,12 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="New release of PMDK">
+<meta property="og:description" content="We&rsquo;ve been very quiet on this blog as of late, mostly because of the amount of work that we needed to put into our very ambitiously planned 1.5 release. But we&rsquo;ve made it, and there&rsquo;s finally time to get back to discussing the technical minutiae of our work. In this post, we will go over the major library changes that have been introduced in 1.5.
+Release planning in the open But first, I&rsquo;d like to highlight a change to our release planning process.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2018/10/new-release-of-pmdk/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2018-10-22T19:55:17-07:00">
+<meta property="article:modified_time" content="2018-10-22T19:55:17-07:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +106,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +178,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -363,7 +370,7 @@ libpmemobj pool would have to happen under sudo. To avoid that, the RAS features
 described here are opt-in. This will be changed to opt-out once these access
 restrictions are relaxed in the future kernel versions.</p>
 <p>To enable or disable RAS features, we&rsquo;ve developed a new pmempool command,
-pmempool feature. You can find more information about on its <a href=https://pmem.io/pmdk/manpages/linux/master/pmempool/pmempool-feature.1.html>man page</a>.</p>
+pmempool feature. You can find more information about on its <a href=/pmdk/manpages/linux/master/pmempool/pmempool-feature.1.html>man page</a>.</p>
 <h2 id=pmreorder>pmreorder</h2>
 <p>Almost since the beginning of this project, we planned on implementing a tool
 which could exhaustively check data consistency for all possible combination of
@@ -375,7 +382,7 @@ enough for generic use. And so, after almost two years, we have finally decided
 that it&rsquo;s time to revisit the topic and cleanup the old codebase so that it can
 be released alongside pmemcheck.</p>
 <p>Stay tuned for a blog post about pmreorder. In the meantime, see its
-<a href=https://pmem.io/pmdk/manpages/linux/master/pmreorder/pmreorder.1.html>man page</a>.</p>
+<a href=/pmdk/manpages/linux/master/pmreorder/pmreorder.1.html>man page</a>.</p>
 <h2 id=parameterized-persistence-primitives>Parameterized persistence primitives</h2>
 <p>Right from the start, libpmem shipped with custom-made memcpy/memset
 implementations that made use of non-temporal stores (stores that do not go
@@ -386,7 +393,7 @@ decided to add new variants of libpmem primitives (flush, memcpy, &mldr;) that t
 flags which control how the functions behave.</p>
 <p>We found this so useful that we also exposed this functionality in libpmemobj
 variants of persistence primitives.</p>
-<p>For more information, see <em>pmemobj_memcpy_persist</em> <a href=https://pmem.io/pmdk/manpages/linux/master/libpmemobj/pmemobj_memcpy_persist.3>man page</a>.</p>
+<p>For more information, see <em>pmemobj_memcpy_persist</em> <a href=/pmdk/manpages/linux/master/libpmemobj/pmemobj_memcpy_persist.3>man page</a>.</p>
 <h2 id=removal-of-libpmemcto>Removal of libpmemcto</h2>
 <p>This version of PMDK won&rsquo;t include the previously experimental libpmemcto. Due
 to the complexity of that library, and the fact that it was based on a very
@@ -406,7 +413,7 @@ access to a variable. That mechanism could be useful for users wanting to employ
 custom synchronization primitives or even implement entirely custom algorithms
 that require volatile variables on persistent memory.</p>
 <p>This a fairly small API addition which has a large number of potential use cases.
-See its <a href=https://pmem.io/pmdk/manpages/linux/master/libpmemobj/oid_is_null.3>man page</a> for more details.</p>
+See its <a href=/pmdk/manpages/linux/master/libpmemobj/oid_is_null.3>man page</a> for more details.</p>
 <h3 id=custom-allocation-class-improvements>Custom allocation class improvements</h3>
 <p>In the previous release of libpmemobj, we&rsquo;ve included a feature to create custom
 allocation class at runtime which can be used to optimize fragmentation and
@@ -419,7 +426,7 @@ with smaller objects, which we observed during our Java and Python enabling effo
 <p>Additionally, the API didn&rsquo;t allow for alignment of allocated objects to be
 specified. This has been addressed, and allocations can now be aligned to any
 power-of-two value.</p>
-<p>See appropriate CTL namespace <a href=https://pmem.io/pmdk/manpages/linux/master/libpmemobj/pmemobj_ctl_get.3>entry point</a> for
+<p>See appropriate CTL namespace <a href=/pmdk/manpages/linux/master/libpmemobj/pmemobj_ctl_get.3>entry point</a> for
 more information.</p>
 <h3 id=rewrite-of-redo-and-undo-log-for-transaction-support>Rewrite of redo and undo log for transaction support</h3>
 <p>For the past couple of months, we&rsquo;ve been optimizing libpmemobj&rsquo;s transactions
@@ -440,7 +447,7 @@ pools that were created using any of the previous libpmemobj versions, and had
 unrecovered operations in the log, are not going to be compatible with the new
 algorithms.</p>
 <p>To provide users with an upgrade path, we&rsquo;ve implemented a brand new
-<a href=https://pmem.io/pmdk-convert/pmdk-convert.1.html>pmdk-convert</a> tool which will
+<a href=/pmdk-convert/pmdk-convert.1.html>pmdk-convert</a> tool which will
 automatically process the logs using the correct recovery
 mechanism, and then will bump the major layout version to indicate that the pool
 can be now opened using the new library version.</p>
@@ -457,7 +464,7 @@ libpmemobj-specific semantics.</p>
 anticipating that it&rsquo;s soon going to become a much larger project.</p>
 <p>We started the containers work easy, with <code>pmem::obj::array</code> that provides some
 convenience features for use with transactions. See our
-<a href=https://pmem.io/libpmemobj-cpp/master/doxygen/structpmem_1_1obj_1_1experimental_1_1array.html>doxygen</a> documentation for more info.</p>
+<a href=/libpmemobj-cpp/master/doxygen/structpmem_1_1obj_1_1experimental_1_1array.html>doxygen</a> documentation for more info.</p>
 <p>We&rsquo;ve also renamed some function names that, in retrospect, were chosen
 poorly. Functions with old names are still there, but are deprecated.
 If you&rsquo;ve been using libpmemobj-cpp, you should start seeing compile-time
@@ -540,16 +547,36 @@ in-depth description of the algorithms that underpin PMDK.</p>
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>

@@ -1,5 +1,11 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="Pool conversion tool">
+<meta property="og:description" content="Introduction When we published the first PMDK stable release, we committed to maintaining stable on-media layout. This means that all future PMDK changes have to be backward compatible. Unfortunately, we weren&rsquo;t successful in adhering to the strict requirements which would be needed to maintain compatibility, mostly because we made changes whose benefit far outweighed the costs. For this reason, we created the pmempool convert command. This tool was used to convert pools which were created with old PMDK versions to the newer on-media layout.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2019/02/pool-conversion-tool/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2019-02-01T19:55:17-07:00">
+<meta property="article:modified_time" content="2019-02-01T19:55:17-07:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +105,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +177,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -310,7 +316,7 @@ compatibility, mostly because we made changes whose benefit far outweighed
 the costs. For this reason, we created the <code>pmempool convert</code> command. This tool was used to convert
 pools which were created with old PMDK versions to the newer on-media layout.
 In 1.5 release this functionality was refactored and moved to a separate tool
-called <a href=https://pmem.io/pmdk-convert/manpages/v1.5/pmdk-convert.1.html><strong>pmdk-convert</strong></a>.</p>
+called <a href=/pmdk-convert/manpages/v1.5/pmdk-convert.1.html><strong>pmdk-convert</strong></a>.</p>
 <h2 id=layout-versions-vs-pmdk-releases>Layout versions vs. PMDK releases</h2>
 <p>The on-media layout of libpmemobj pools has changed few times since the
 initial release. The mapping between the layout version and corresponding PMDK
@@ -404,7 +410,7 @@ and <span style=color:#66d9ef>then</span> use pmdk-convert.
 </code></pre></div><p>pmdk-convert does not support conversion of pools with remote replicas.
 To convert such pools, the following workaround must be used.</p>
 <ol>
-<li>A remote replica needs to be removed by <a href=https://pmem.io/pmdk/manpages/linux/master/pmempool/pmempool-transform.1.html>pmempool transform command</a>.
+<li>A remote replica needs to be removed by <a href=/pmdk/manpages/linux/master/pmempool/pmempool-transform.1.html>pmempool transform command</a>.
 Before calling pmempool transform, you have to prepare a new poolset file
 without a remote replica.</li>
 </ol>
@@ -436,7 +442,7 @@ pmempool transform command:</li>
 <p>In 1.5 release we introduced an extra features flags. After upgrading pmdk
 (and pool conversion for libpmemobj pools), they can be turned on for
 existing pools. Detailed information about feature flags can be found in
-the <a href=https://pmem.io/blog/2018/12/pool-features/>pool features</a> blog post.</p>
+the <a href=/blog/2018/12/pool-features/>pool features</a> blog post.</p>
 <div class=clear></div>
 <div class="si-share border-0 d-flex justify-content-between align-items-center">
 <span>Share this Post:</span>
@@ -496,6 +502,26 @@ the <a href=https://pmem.io/blog/2018/12/pool-features/>pool features</a> blog p
 </div>
 </div>
 </div>
+<div class="entry col-12 col-md-6">
+<div class="grid-inner row align-items-center gutter-20">
+<div class=col-4>
+<div class=entry-image>
+<a href=https://pmem.io/blog/2014/09/nvm-library-overview/ data-lightbox=image><img src=/images/pmem_logo.png alt="NVM Library Overview"></a>
+</div>
+</div>
+<div class=col-8>
+<div class="entry-title title-xs">
+<h3><a href=https://pmem.io/blog/2014/09/nvm-library-overview/>NVM Library Overview</a></h3>
+</div>
+<div class=entry-meta>
+<ul>
+<li><i class=icon-user></i> Andyrudoff</li>
+<li><i class=icon-calendar3></i> 01 Sep, 2014</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -504,16 +530,36 @@ the <a href=https://pmem.io/blog/2018/12/pool-features/>pool features</a> blog p
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>

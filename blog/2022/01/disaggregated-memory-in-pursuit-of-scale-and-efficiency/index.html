@@ -1,5 +1,12 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="Disaggregated Memory - In pursuit of scale and efficiency">
+<meta property="og:description" content="A software person perspective on new upcoming interconnect technologies.
+Existing Server Landscape Servers are expensive. And difficult to maintain properly. That&rsquo;s why most people turn to the public cloud for their hosting and computing needs. Dynamic virtual server instances have been key to unlocking efficiency gains for both Cloud Service Providers (CSPs) and their users. CSPs can leverage virtualization to colocate many workloads on fewer physical servers. And cloud users have access to a huge pool of on-demand processing power, only having to pay for what they use.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2022/01/disaggregated-memory-in-pursuit-of-scale-and-efficiency/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2022-01-19T12:48:07+01:00">
+<meta property="article:modified_time" content="2022-01-19T12:48:07+01:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +106,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +178,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -304,28 +311,29 @@ PMDK
 <p>A software person perspective on new upcoming interconnect technologies.</p>
 <h2 id=existing-server-landscape>Existing Server Landscape</h2>
 <p>Servers are expensive. And difficult to maintain properly. That&rsquo;s why most
-people turn to the public cloud for their hosting and computing needs. Dynamically
-scaling instances on demand have been key to unlocking efficiency gains for
+people turn to the public cloud for their hosting and computing needs. Dynamic
+virtual server instances have been key to unlocking efficiency gains for
 both Cloud Service Providers (CSPs) and their users. CSPs can leverage
 virtualization to colocate many workloads on fewer physical servers. And cloud
 users have access to a huge pool of on-demand processing power, only having to
 pay for what they use. It&rsquo;s a win-win scenario in terms of efficiency.
 More people share fewer resources.</p>
-<p>However, there are still many places where resources are not as efficiently
-utilized as they could be. Most pertinently, memory. And memory is pricey,
-and it&rsquo;s often the single most expensive item in a typical server.
-Also, DRAM technology scaling is increasingly challenging, which, combined with
-the rapidly increasing number of cores in modern CPUs, means that it&rsquo;s
+<p>However, there are still many resources that are not utilized as efficiently
+as they could be. Most pertinently, memory. And memory is pricey; it&rsquo;s often
+the single most expensive component in a typical server.
+Also, DRAM technology scaling is <a href=https://ieeexplore.ieee.org/document/9108122>increasingly challenging</a> [1], which, combined
+with the rapidly increasing number of cores in modern processors, means that it&rsquo;s
 increasingly difficult for CSPs and hardware vendors to provide sufficient
 memory capacity and bandwidth per CPU core. And there are only so many memory
 channels you can add to a sever before you physically run out of space on the
 motherboard.</p>
 <p><img src=/images/posts/cxl-stranded-memory.png alt="stranded memory"></p>
 <p>On top of all that, we are likely not utilizing existing memory capacity as
-efficiently as we could. &ldquo;Google, Facebook, and Alibaba report that as much as
-50% of server memory in data centers is unutilized&rdquo; [1]. Some of that memory
-is left unallocated at a hypervisor level. Some is stranded because all local
-cores are already allocated. Some is also left unused at the application/OS level.
+efficiently as we could. <a href=https://arxiv.org/pdf/2112.12946.pdf>&ldquo;Google, Facebook, and Alibaba report that as much as
+50% of server memory in data centers is unutilized&rdquo;</a> [2]. Some
+of that memory is left unallocated at a hypervisor level. Some is stranded
+because all local cores are already allocated. Some is also left unused at
+the application/OS level.
 At cloud scale, that&rsquo;s literally billions of dollars in hardware sitting idle.</p>
 <h2 id=scaling-memory>Scaling memory</h2>
 <p>So, how can we continue scaling memory capacity and bandwidth while keeping
@@ -334,31 +342,32 @@ has already happened, to an extent, with block storage. Cloud storage services
 let servers access remote data, making individual instances essentially
 ephemeral and interchangeable. But they also allow CSPs to pool resources
 and enable their customers to dynamically scale their storage needs over time.
-And yes, there&rsquo;s some cost to it. Remote storage is not as fast as a local NVMe drive can be. But, based on the popularity of cloud storage solutions, horizontal scalability
-benefits clearly outweigh the costs of reduced vertical scaling. For many,
-locally attached storage has become a cache.</p>
-<p>So, M3 (Magnificent Memory Manager?) anyone? But is that even possible?
-Folks in the industry and academia considered many approaches that use regular
-network hardware. Remote Direct Memory Access (RDMA) technologies, such as
-Infiniband, can be leveraged to create approximate solutions to disaggregated
-memory with fairly low latency. But not memory-like latency. So we end up with
-swap-style implementations (e.g., INFINISWAP [2]), and not true
-remote attached memory.
-But if RDMA isn&rsquo;t the answer, then what? Modern high-speed
-cache-coherent interconnects with memory pooling.</p>
+And yes, there&rsquo;s some cost to it. Remote storage is not as fast as a local NVMe
+drive can be. But, based on the popularity of cloud storage solutions, horizontal
+scalability benefits clearly outweigh the costs of reduced vertical scaling.
+For many, locally attached storage has become a cache.</p>
+<p>So, M3 (Magnificent Memory Manager?) anyone? But is moving memory outside of the
+server even possible? Many people in the industry and academia considered
+approaches that use regular network hardware. Remote Direct Memory Access (RDMA)
+technologies, such as Infiniband, can be leveraged to create approximate
+solutions to disaggregated memory with fairly low latency.
+But not memory-like latency. So we end up with swap-style implementations
+(e.g., <a href=https://www.usenix.org/conference/nsdi17/technical-sessions/presentation/gu>INFINISWAP</a> [3]), and not true remote attached memory.
+But if RDMA isn&rsquo;t the answer, then what is? Modern high-speed cache-coherent
+interconnects with memory pooling.</p>
 <h2 id=cxl>CXL</h2>
-<p>An example of such technology is CXL. It&rsquo;s an interconnect standard built on
-top of PCIe. It has many features, but, most notably for this
+<p>An example of such technology is <a href=https://www.computeexpresslink.org/>CXL</a> [4]. It&rsquo;s an interconnect standard
+built on top of PCIe. It has many features, but, most notably for this
 discussion, CXL facilitates cache-coherent memory access between CPUs and
 supporting PCIe-attached devices (pure memory devices but also accelerators).
-These operating modes are called CXL.cache and CXL.mem. The 2.0 version of
-the standard additionally enables a single device to connect to multiple hosts.</p>
+This is called CXL.cache and CXL.mem. The 2.0 version of the standard
+additionally enables a single CXL device to connect to multiple hosts.</p>
 <p><img src=/images/posts/cxl-mem-pool.png alt="CXL.memory pool"></p>
 <p>CXL-attached memory, given that it uses PCIe, also has the added benefit of
 being easier to manage (e.g., hot-plugged memory) and easier to scale (both
 in terms of capacity and bandwidth) than DDR memory in a DIMM form-factor. And,
-speaking of form factors, many hardware vendors have already announced plans
-to use EDSFF (Enterprise & Data Center SSD Form Factor [3]) together with CXL.
+speaking of form factors, many hardware vendors have already <a href=https://business.kioxia.com/content/dam/kioxia/ncsa/en-us/business/asset/KIOXIA_EDSFF_Intro_White_Paper.pdf>announced plans</a> [5]
+to use EDSFF (Enterprise & Data Center SSD Form Factor) together with CXL.
 So it&rsquo;s likely that in the future we will see servers where both
 memory and storage (among other things) go into exactly the same slot.
 So convenient.</p>
@@ -368,7 +377,7 @@ rack-level disaggregated on-demand memory, increasing allocation flexibility.
 This should allow cloud users to downscale their initial memory provision and
 then dynamically allocate and deallocate memory pages based on application demand.</p>
 <p><img src=/images/posts/cxl-m3.png alt=m3></p>
-<p>What&rsquo;s also possible are remote memory services where applications connect
+<p>What&rsquo;s also possible are cloud memory services where applications connect
 to named remote memory regions that preserve their content. So just like cloud
 block storage, but with bytes. Such capability might unleash programmers to do
 all sorts of crazy optimizations - from dramatically reducing startup time, through
@@ -388,9 +397,9 @@ However, it&rsquo;s expected that the difference will be similar to that of a lo
 remote NUMA node access. At least for CXL attached DRAM. That&rsquo;s still plenty fast.
 But is it fast enough for applications not to notice if suddenly some of its
 memory accesses take twice (or more) as long? Only time will tell, but I&rsquo;m not
-so sure. For the most part, NUMA-aware software doesn&rsquo;t really scale
+so sure. For the most part, software that isn&rsquo;t NUMA-aware doesn&rsquo;t really scale
 all that well across sockets.</p>
-<h2 id=heterogeneous-memory>Heterogeneous memory</h2>
+<h2 id=heterogeneous-memory-hierarchy>Heterogeneous memory hierarchy</h2>
 <p>In practice, the CXL.mem protocol expands the increasingly heterogeneous memory
 hierarchy of modern servers. The specific access latency of remote attached
 memory will dependent on the type of media used in the device.
@@ -404,43 +413,42 @@ called Heterogeneous Memory Attribute Table (HMAT), and it&rsquo;s part of the A
 HMAT exposes information required to determine the performance characteristics
 (latency, bandwidth) of a memory device (target) as accessed from a CPU or
 other I/O device (initiator).
-Operating systems can parse that table and expose performance information [4]
+Operating systems can parse that table and <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>expose performance information</a> [6]
 to user-space software.</p>
-<p>If you&rsquo;d like to learn more, Michal described HMAT in the context of memkind in
-one of our earlier articles on [5].</p>
+<p>If you&rsquo;d like to learn more, we&rsquo;ve described HMAT in the context of memkind in
+an <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>earlier article</a> [7] on pmem.io.</p>
 <h2 id=implications-for-software>Implications for software</h2>
 <p>Armed with this knowledge, software should then be able to make informed data
 placement decisions - which memory allocations go where.
 But how? And, better yet, why? Wouldn&rsquo;t it be better for some lower-level
 abstraction to handle this transparently for applications?</p>
-<p>And to the extent that transparent data placement management is possible,
-I agree. But there to some caveats, in my opinion.</p>
+<p>And to the extent that transparent data placement is possible, I agree.
+But there to some caveats, in my opinion.</p>
 <p>First, making decisions about data placement is mostly about predicting the
 system&rsquo;s future behavior. The lower in the stack we make those decisions,
-the less information is available to make predictions. And sure, cache
+the less information is available for predictions. And sure, cache
 replacement policies aren&rsquo;t anything new. It&rsquo;s a well-researched topic. The critical
 difference with memory is that data is directly accessible. It doesn&rsquo;t
 have to be moved to DRAM on access. So there are additional considerations to
 make, such as promotion policies or observing data access patterns beyond simple
-<code>get</code> as with typical caching solutions.</p>
+<code>get(key)</code> as with typical caching solutions.</p>
 <p>Second, any genuinely transparent universal tiering solution would likely operate
 on pages. And pages are typically far larger than individual data objects.
-Especially nowadays, where memory capacity increases and using huge pages
-is often advisable to increase performance. You wouldn&rsquo;t want your OS
-constantly moving 2MB objects between different memory tiers.
+Especially nowadays, where memory capacities are increasing and using huge pages
+is <a href=https://research.google/pubs/pub50370/>often advisable to increase performance</a> [8]. You wouldn&rsquo;t
+want your OS constantly moving 2MB objects between different memory tiers.
 Such transparent solutions, to work optimally, would have to be complemented
 by user-space software that considers the spatial locality of memory objects
-within a page during allocation.</p>
+within a page during allocation (and probably beyond).</p>
 <h2 id=ongoing-software-enabling-efforts>Ongoing software enabling efforts</h2>
 <p>Ultimately, I think the best solutions are likely to consist of a kernel-level
 (or hypervisor-level) mechanism for memory migration between tiers and
 an optimized user-space software components to ensure hot and cold data is
 stored on separate pages. Both working together to maximize performance.
 And both are already being worked on by many different people.
-There are now many Linux kernel memory tiering activities [6, 7]. And just as
-many user-space software initiatives trying to tackle page placement problems.
-Memkind among them. We will see in time if any of my predictions are worth their
-salt.</p>
+There are now <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>many Linux</a> [9] kernel
+<a href=https://lwn.net/Articles/860215/>memory tiering</a> [10] activities. And just as many user-space
+software projects trying to tackle page placement problems. Memkind among them.</p>
 <p><img src=/images/posts/cxl-user-kernel-malloc.png alt="CXL user/kernel malloc"></p>
 <p>That sounds all good and fine for volatile memory, where we care only about
 additional capacity and efficiency gains. But what about those named memory
@@ -452,13 +460,16 @@ updates to such regions. I hope that Persistent Memory Development Kit
 <p>And the master plan is revealed. Well, not really. But it&rsquo;s nice when things
 start to align.</p>
 <h2 id=references>References</h2>
-<p>[1] <a href=https://arxiv.org/pdf/2112.12946.pdf>Redy: Remote Dynamic Memory Cache</a></p>
-<p>[2] <a href=https://www.usenix.org/conference/nsdi17/technical-sessions/presentation/gu>Efficient Memory Disaggregation with Infiniswap</a></p>
-<p>[3] <a href=https://business.kioxia.com/content/dam/kioxia/ncsa/en-us/business/asset/KIOXIA_EDSFF_Intro_White_Paper.pdf>KIOXIA Introducing the EDSFF E3 Family of Form Factors</a></p>
-<p>[4] <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>Linux kernel guide - NUMA Locality</a></p>
-<p>[5] <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>Memkind support for heterogeneous memory attributes</a></p>
-<p>[6] <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>Optimize Page Placement in Tiered Memory System</a></p>
-<p>[7] <a href=https://lwn.net/Articles/860215/>Migrate Pages in lieu of discard</a></p>
+<p>[1] <a href=https://ieeexplore.ieee.org/document/9108122>Scaling and Performance Challenges of Future DRAM</a></p>
+<p>[2] <a href=https://arxiv.org/pdf/2112.12946.pdf>Redy: Remote Dynamic Memory Cache</a></p>
+<p>[3] <a href=https://www.usenix.org/conference/nsdi17/technical-sessions/presentation/gu>Efficient Memory Disaggregation with Infiniswap</a></p>
+<p>[4] <a href=https://www.computeexpresslink.org/>Compute Express Link™: The Breakthrough CPU-to-Device Interconnect</a></p>
+<p>[5] <a href=https://business.kioxia.com/content/dam/kioxia/ncsa/en-us/business/asset/KIOXIA_EDSFF_Intro_White_Paper.pdf>KIOXIA Introducing the EDSFF E3 Family of Form Factors</a></p>
+<p>[6] <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>Linux kernel guide - NUMA Locality</a></p>
+<p>[7] <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>Memkind support for heterogeneous memory attributes</a></p>
+<p>[8] <a href=https://research.google/pubs/pub50370/>Beyond malloc efficiency to fleet efficiency: a hugepage-aware memory allocator</a></p>
+<p>[9] <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>Optimize Page Placement in Tiered Memory System</a></p>
+<p>[10] <a href=https://lwn.net/Articles/860215/>Migrate Pages in lieu of discard</a></p>
 <div class="tagcloud clearfix bottommargin">
 <a href=https://pmem.io/tags/cxl>CXL</a>
 <a href=https://pmem.io/tags/hmat>HMAT</a>
@@ -571,16 +582,36 @@ start to align.</p>
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>

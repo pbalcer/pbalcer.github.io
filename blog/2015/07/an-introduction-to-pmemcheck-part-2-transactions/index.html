@@ -1,5 +1,11 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="An introduction to pmemcheck (part 2) - transactions">
+<meta property="og:description" content="In my previous blog post I described the key features of the new persistent memory analysis tool we created - pmemcheck. You should now be aware of the main pitfalls of persistent memory programming and of ways pmemcheck informs you about possible misuses of PMEM. We should now dive into a more general approach of using persistent memory in a failsafe manner - transactions. This shouldn&rsquo;t be an alien concept for anybody who had anything to do with databases.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2015/07/an-introduction-to-pmemcheck-part-2-transactions/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2015-07-20T19:55:17-07:00">
+<meta property="article:modified_time" content="2015-07-20T19:55:17-07:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +105,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +177,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -302,7 +308,7 @@ Pmemcheck
 </div>
 <div class="entry-content mt-0">
 <p>In my previous blog post I described the key features of the new persistent memory analysis tool we created - pmemcheck. You should now be aware of the main pitfalls of persistent memory programming and of ways pmemcheck informs you about possible misuses of PMEM. We should now dive into a more general approach of using persistent memory in a failsafe manner - transactions. This shouldn&rsquo;t be an alien concept for anybody who had anything to do with databases. The idea of transactions in persistent memory is very similar. You enclose a set of operations, which are to be performed as a whole, inside a transaction. The transaction should ensure that on transaction commit you get a durable and consistent state. By durable I mean that all changes will be made persistent and by consistent I mean you will get either the state from before the transaction or after all of the modifications were made. I mentioned databases, because the concept is similar and everybody should be familiar with it, but you have to remember that this is on a slightly different level of abstraction. This is raw access of memory and not database inserts. This of course depends on the implementation of transactions, but it might prove very helpful not to think, that all persistent memory transactions will have ACID properties. Or at least they won&rsquo;t be on a level you expect them to be.</p>
-<p>As always examples will be the best way to show what I mean. I will be showing all of my examples with the use of <a href=https://pmem.io/pmdk/ title="Persistent Memory Development Kit">PMDK</a> and the transactions available in <a href=https://pmem.io/pmdk/libpmemobj/ title=pmemobj>libpmemobj</a>. I will not cover how they work, because that has already been done by @pbalcer in this great blog <a href=https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-2-transactions/ title="pmemobj transactions">post</a>. This is roughly how a transaction in pmemobj looks like:</p>
+<p>As always examples will be the best way to show what I mean. I will be showing all of my examples with the use of <a href=/pmdk/ title="Persistent Memory Development Kit">PMDK</a> and the transactions available in <a href=/pmdk/libpmemobj/ title=pmemobj>libpmemobj</a>. I will not cover how they work, because that has already been done by @pbalcer in this great blog <a href=/blog/2015/06/an-introduction-to-pmemobj-part-2-transactions/ title="pmemobj transactions">post</a>. This is roughly how a transaction in pmemobj looks like:</p>
 <div class=highlight><div style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4>
 <table style=border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block><tr><td style=vertical-align:top;padding:0;margin:0;border:0>
 <pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
@@ -404,7 +410,7 @@ POBJ_LAYOUT_NAME(example),
 <p>}</code></pre></td></tr></table></p>
 </div>
 </div>
-<p>This might seem like a lot of code, but bear with me, we only need to concentrate on a few lines. The rest is pmemobj pool creation and typesafety specific. If you want to know more about them please read our other <a href=https://pmem.io/blog/ title="Blog posts">blog posts</a>. What we will be analyzing are lines 11 - 14. We explicitly add one field of our root object to the transaction. This means that the value of <code>root->value</code> is saved and will be reverted should the transaction abort for some reason. We then assign a value to it and make a decision based on it in line 14. However there&rsquo;s something terribly wrong here. We modified <code>root->is_odd</code>, which is not tracked by the transaction. Not to mention that, since it&rsquo;s not added to transaction, it won&rsquo;t be flushed to persistence at <code>TX_END</code>. Should the application crash after line 14 we are left with a number of possible states, the worst one being <code>root->is_odd</code> got persisted and the transaction got rolled back.</p>
+<p>This might seem like a lot of code, but bear with me, we only need to concentrate on a few lines. The rest is pmemobj pool creation and typesafety specific. If you want to know more about them please read our other <a href=/blog/ title="Blog posts">blog posts</a>. What we will be analyzing are lines 11 - 14. We explicitly add one field of our root object to the transaction. This means that the value of <code>root->value</code> is saved and will be reverted should the transaction abort for some reason. We then assign a value to it and make a decision based on it in line 14. However there&rsquo;s something terribly wrong here. We modified <code>root->is_odd</code>, which is not tracked by the transaction. Not to mention that, since it&rsquo;s not added to transaction, it won&rsquo;t be flushed to persistence at <code>TX_END</code>. Should the application crash after line 14 we are left with a number of possible states, the worst one being <code>root->is_odd</code> got persisted and the transaction got rolled back.</p>
 <p>Finally after a long introduction we get back to pmemcheck. As you can read in pmemcheck&rsquo;s <a href=https://github.com/pmem/valgrind/blob/pmem-3.15/pmemcheck/docs/pmc-manual.xml title="Pmemcheck documentation">documentation</a>, it has built-in support for transactions. The most basic function you can imagine, would be tracking stores made outside of transactions. That is exactly what it does:</p>
 <pre><code>Number of stores made outside of transactions: 1
 Stores made outside of transactions:
@@ -412,7 +418,7 @@ Stores made outside of transactions:
        Address: 0x100001a2404	size: 4
 </code></pre>
 <p>It tells you that during a transaction, you modified a region of persistent memory, which wasn&rsquo;t tracked by the active transaction. This is rather simple and obvious - do not modify something you know won&rsquo;t be rolled-back on transaction abort. Remembering to add all necessary objects in a transaction as short as in the given example is easy. Now imagine a longer transaction, where more objects get modified and you forgot to add one to the transaction undo log. Debugging this memory corruption situation would be a nightmare. Thanks to pmemcheck, you get the full stacktrace, where the store has been made. The only things left are: analyze and fix the issue - things couldn&rsquo;t get much simpler.</p>
-<p>How does pmemcheck do this? Well it is actually quite straightforward. Conceptually it keeps track of all transactions the given thread contributes to, and each transaction has a set of regions it keeps track of. Since we already analyze each store made to persistent memory, it would be a waste not to to check them against some kind of transactions. Once again, pmemcheck is oblivious to the type and implementation of transactions. Just like before, it uses macros to gain knowledge of the active transactions and the regions tracked by them. In case of libpmemobj, things are rather simple, because transactions are flattened. This means that each thread can be in exactly one active transaction in each given moment. Moreover libpmemobj <strong>does not support</strong> multiple threads cooperating within single transactions. If you want to know more about challenges of multi-threaded transactions please read our <a href=https://pmem.io/blog/2015/09/challenges-of-multi-threaded-transactions/ title="Challenges of multi-threaded transactions">blog post</a> about this topic. Pmemcheck however does not limit itself to this transaction model, it is legal for threads to contribute to other threads' transactions. For example:</p>
+<p>How does pmemcheck do this? Well it is actually quite straightforward. Conceptually it keeps track of all transactions the given thread contributes to, and each transaction has a set of regions it keeps track of. Since we already analyze each store made to persistent memory, it would be a waste not to to check them against some kind of transactions. Once again, pmemcheck is oblivious to the type and implementation of transactions. Just like before, it uses macros to gain knowledge of the active transactions and the regions tracked by them. In case of libpmemobj, things are rather simple, because transactions are flattened. This means that each thread can be in exactly one active transaction in each given moment. Moreover libpmemobj <strong>does not support</strong> multiple threads cooperating within single transactions. If you want to know more about challenges of multi-threaded transactions please read our <a href=/blog/2015/09/challenges-of-multi-threaded-transactions/ title="Challenges of multi-threaded transactions">blog post</a> about this topic. Pmemcheck however does not limit itself to this transaction model, it is legal for threads to contribute to other threads' transactions. For example:</p>
 <div class=highlight><div style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4>
 <table style=border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block><tr><td style=vertical-align:top;padding:0;margin:0;border:0>
 <pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
@@ -747,16 +753,36 @@ POBJ_LAYOUT_NAME(example),
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>

@@ -1,5 +1,13 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="Language bindings for pmemkv">
+<meta property="og:description" content="pmemkv is a local/embedded key-value datastore optimized for persistent memory. It is written in C and C++, but to satisfy a wider audience it comes with several bindings for high-level languages. Currently: Java (with JNI), Node.js, Python and Ruby.
+The picture below illustrates architecture and software stack of pmemkv and its bindings. The most up-to-date information about pmemkv and its bindings is located in pmemkv&rsquo;s README file.
+Common for bindings There are few common characteristics of all bindings:">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2020/03/language-bindings-for-pmemkv/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2020-03-04T19:55:17-07:00">
+<meta property="article:modified_time" content="2020-03-04T19:55:17-07:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +107,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +179,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -301,7 +309,7 @@ Pmemkv
 </ul>
 </div>
 <div class="entry-content mt-0">
-<p><a href=https://pmem.io/pmemkv/>pmemkv</a> is a local/embedded key-value datastore optimized for persistent memory.
+<p><a href=/pmemkv/>pmemkv</a> is a local/embedded key-value datastore optimized for persistent memory.
 It is written in C and C++, but to satisfy a wider audience it comes with several bindings
 for high-level languages. Currently: Java (with JNI), Node.js, Python and Ruby.</p>
 <p>The picture below illustrates architecture and software stack of pmemkv and its bindings.
@@ -349,7 +357,7 @@ to check the support. Bindings without direct access need to use buffer to copy 
 backward compatibility and stable API, compatible with <strong>libpmemkv 1.0</strong>. This binding supports
 direct access to the data stored in the persistent memory.</p>
 <p>It also delivers API description in form of JSDoc documentation (accessible e.g. as html in
-<a href=https://pmem.io/pmemkv-nodejs>here</a>) and NodeJS-native support for configuring engines by JSON object.
+<a href=/pmemkv-nodejs>here</a>) and NodeJS-native support for configuring engines by JSON object.
 This binding uses exceptions for error handling. It uses npm for distribution and can be installed
 with command <code>npm install</code> executed within the source directory. It then installs the dependencies
 listed in package.json in the local node_modules folder.</p>
@@ -360,7 +368,7 @@ see <a href=https://github.com/pmem/pmemkv-nodejs>pmemkv-nodejs github repositor
 and stable API, compatible with <strong>libpmemkv 1.0</strong>. It supports direct access to the data
 on the persistent memory.</p>
 <p>It also delivers API description in form of PyDoc documentation (accessible e.g. as html in
-<a href=https://pmem.io/pmemkv-python>here</a>) and Python-native data type (<code>dict</code>) to store engine&rsquo;s configuration items.
+<a href=/pmemkv-python>here</a>) and Python-native data type (<code>dict</code>) to store engine&rsquo;s configuration items.
 It uses exceptions for error handling. To install this project in your system type:
 <code>python3 setup.py install</code>. If you rather want it to be installed in your home directory
 (<code>~/.local/lib/</code>), add <code>--user</code> to the installation command.</p>
@@ -372,13 +380,13 @@ compatible with <strong>libpmemkv 1.0</strong>. It supports direct data access a
 for configuring a database. This binding uses JNI to interoperate with C and that
 pmemkv C JNI implementation is delivered as a part of the same repository.</p>
 <p>It also delivers API description in form of JavaDoc documentation (accessible e.g. as html in
-<a href=https://pmem.io/pmemkv-java>here</a>). It uses exceptions for error handling. To install pmemkv-java in the system,
+<a href=/pmemkv-java>here</a>). It uses exceptions for error handling. To install pmemkv-java in the system,
 make sure <strong>libpmemkv</strong> is installed and just execute within the source directory: <code>mvn install</code>.</p>
 <p>For more information, such as required dependencies, usage and full installation guide,
 see <a href=https://github.com/pmem/pmemkv-java>pmemkv-java github repository</a>.</p>
 <p>As an alternative for java programmers, there are two other pmem options:</p>
 <ul>
-<li>a low-level library for pmem, called LLPL (<a href=https://pmem.io/blog/2020/05/introduction-to-llpl>see introduction blog post</a>)</li>
+<li>a low-level library for pmem, called LLPL (<a href=/blog/2020/05/introduction-to-llpl>see introduction blog post</a>)</li>
 <li>and a library for Java objects on pmem - <a href=https://github.com/pmem/pcj>Persistent Collections for Java</a>.</li>
 </ul>
 <h3 id=pmemkv-ruby>pmemkv-ruby</h3>
@@ -403,19 +411,19 @@ see <a href=https://github.com/pmem/pmemkv-ruby>pmemkv-ruby github repository</a
 <td><strong>Node.js</strong></td>
 <td><strong>1.0</strong></td>
 <td><strong>yes</strong></td>
-<td><strong><a href=https://github.com/pmem/pmemkv-nodejs>GitHub</a></strong>, <strong><a href=https://pmem.io/pmemkv-nodejs>docs</a></strong></td>
+<td><strong><a href=https://github.com/pmem/pmemkv-nodejs>GitHub</a></strong>, <strong><a href=/pmemkv-nodejs>docs</a></strong></td>
 </tr>
 <tr>
 <td><strong>Python</strong></td>
 <td><strong>1.0</strong></td>
 <td><strong>yes</strong></td>
-<td><strong><a href=https://github.com/pmem/pmemkv-python>GitHub</a></strong>, <strong><a href=https://pmem.io/pmemkv-python>docs</a></strong></td>
+<td><strong><a href=https://github.com/pmem/pmemkv-python>GitHub</a></strong>, <strong><a href=/pmemkv-python>docs</a></strong></td>
 </tr>
 <tr>
 <td><strong>Java</strong></td>
 <td><strong>1.0</strong></td>
 <td><strong>yes</strong></td>
-<td><strong><a href=https://github.com/pmem/pmemkv-java>GitHub</a></strong>, <strong><a href=https://pmem.io/pmemkv-java>docs</a></strong></td>
+<td><strong><a href=https://github.com/pmem/pmemkv-java>GitHub</a></strong>, <strong><a href=/pmemkv-java>docs</a></strong></td>
 </tr>
 <tr>
 <td>Ruby</td>
@@ -545,16 +553,36 @@ to let us know. We are always eager to help our community grow.</p>
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>

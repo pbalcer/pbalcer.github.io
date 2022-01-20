@@ -1,5 +1,12 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
+<meta property="og:title" content="An introduction to pmemobj (part 0) - new programming model">
+<meta property="og:description" content="The aim of this tutorial series is to introduce you to programming with persistent, byte-addressable memory using the pmemobj library. We will go over all the available features, implement an example application and learn something about the inner workings of libpmemobj. If you haven&rsquo;t read the NVM Library overview I encourage you to do that now.
+When designing the library API, we&rsquo;ve put a heavy emphasis on ease of use and &ldquo;management explainability&rdquo;, as well as flexibility and performance.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://pmem.io/blog/2015/06/an-introduction-to-pmemobj-part-0-new-programming-model/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2015-06-12T19:55:17-07:00">
+<meta property="article:modified_time" content="2015-06-12T19:55:17-07:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -99,18 +106,18 @@
 <div class="mega-menu-column sub-menu-container col-lg-4 border-bottom py-4">
 <div class=feature-box>
 <div class="fbox-content h-bg-light">
-<a href=https://memkeydb.io>
-<p>MemKeyDB <i class=icon-angle-right></i></p>
-</a>
-</div>
-<div class="fbox-content h-bg-light">
 <a href=http://memkind.github.io/memkind/>
-<p>MemKind <i class=icon-angle-right></i></p>
+<p>Memkind <i class=icon-angle-right></i></p>
 </a>
 </div>
 <div class="fbox-content h-bg-light">
 <a href=/community/#newsletter>
 <p>Newsletter <i class=icon-angle-right></i></p>
+</a>
+</div>
+<div class="fbox-content h-bg-light">
+<a href=https://tieredmemdb.github.io/>
+<p>TieredMemDB <i class=icon-angle-right></i></p>
 </a>
 </div>
 </div>
@@ -171,7 +178,7 @@
 </a>
 </div>
 <div class="fbox-content h-bg-light">
-<a href=https://kb.pmem.io/>
+<a href=/knowledgebase>
 <p>Knowledge base <i class=icon-angle-right></i></p>
 </a>
 </div>
@@ -307,7 +314,7 @@ Model
 <p>Imagine you are tasked with writing two simple applications: one that takes a string from the standard input and writes it to some storage and a second one that reads the string from storage and writes it to the standard output. All while making sure that the string is either read completely or not at all. There are many ways of solving this problem the standard way. One would be to write buffer and its length to a file in the first application, and in the second read the buffer only if it&rsquo;s complete. Now let&rsquo;s say you can somehow magically have pointers to memory that does not go away - the problem becomes simpler since now all you have to do is to allocate the memory, write the length, memcpy the buffer and, in the second application, read the same pointer. But we still have to resort to trickery to satisfy the complete read requirement, more on that later in the series.</p>
 <p>And this, in a nutshell, is what our library provides - persistent pointers and a way to atomically manipulate them. And I hope by now it&rsquo;s clear how this impacts the programming model we are all used to and introduces a whole new set of problems to solve, luckily there&rsquo;s libpmemobj :)</p>
 <h4 id=code-snippets-and-examples>Code snippets and examples</h4>
-<p>This tutorial will include embedded code for you to type, compile and run. Please study them carefully and if you are ever left wondering - feel free to <a href=https://pmem.io/about/>contact us</a>. In addition to that, our library comes with ever-growing collection of <a href=https://github.com/pmem/pmdk/tree/master/src/examples>examples</a>, I encourage you to check them out to see some simple use-cases we implemented.</p>
+<p>This tutorial will include embedded code for you to type, compile and run. Please study them carefully and if you are ever left wondering - feel free to <a href=/about/>contact us</a>. In addition to that, our library comes with ever-growing collection of <a href=https://github.com/pmem/pmdk/tree/master/src/examples>examples</a>, I encourage you to check them out to see some simple use-cases we implemented.</p>
 <p>To run applications based on libpmemobj you don&rsquo;t need real persistent memory in the platform, all that&rsquo;s really necessary is a device with a file system (doesn&rsquo;t have to be DAX) - the only difference will be performance. Depending on the configuration, the library will issue a lot of <code>clflush</code> or <code>msync</code> calls, the latter being obviously way slower. If you end up with unbearable performance while testing your programs without real pmem, you can do something like this:</p>
 <pre><code>PMEM_IS_PMEM_FORCE=1 ./app
 </code></pre>
@@ -360,16 +367,36 @@ Model
 <div class="widget clearfix">
 <h4>Tag Cloud</h4>
 <div class=tagcloud>
+<a href=/tags/persistent-memory class=block role=button>persistent-memory</a>
+<a href=/tags/pmem class=block role=button>pmem</a>
+<a href=/tags/ndctl class=block role=button>ndctl</a>
+<a href=/tags/daxctl class=block role=button>daxctl</a>
+<a href=/tags/pmdk class=block role=button>pmdk</a>
+<a href=/tags/configure class=block role=button>configure</a>
+<a href=/tags/dax class=block role=button>dax</a>
+<a href=/tags/install class=block role=button>install</a>
+<a href=/tags/setup class=block role=button>setup</a>
+<a href=/tags/faq class=block role=button>faq</a>
+<a href=/tags/imdb class=block role=button>imdb</a>
+<a href=/tags/sanitize class=block role=button>sanitize</a>
+<a href=/tags/secure-erase class=block role=button>secure-erase</a>
+<a href=/tags/sql class=block role=button>sql</a>
+<a href=/tags/2019 class=block role=button>2019</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/crash class=block role=button>crash</a>
+<a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
+<a href=/tags/database class=block role=button>database</a>
+<a href=/tags/destroy class=block role=button>destroy</a>
+<a href=/tags/developer class=block role=button>developer</a>
+<a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/emulate class=block role=button>emulate</a>
+<a href=/tags/fpga class=block role=button>fpga</a>
+<a href=/tags/fsck class=block role=button>fsck</a>
+<a href=/tags/gpu class=block role=button>gpu</a>
+<a href=/tags/hang class=block role=button>hang</a>
 <a href=/tags/hmat class=block role=button>hmat</a>
 <a href=/tags/how-to class=block role=button>how-to</a>
-<a href=/tags/imdb class=block role=button>imdb</a>
-<a href=/tags/kafka class=block role=button>kafka</a>
-<a href=/tags/memkind class=block role=button>memkind</a>
-<a href=/tags/oracle class=block role=button>oracle</a>
-<a href=/tags/pmdk class=block role=button>pmdk</a>
-<a href=/tags/sql class=block role=button>sql</a>
 </div>
 </div>
 </div>
