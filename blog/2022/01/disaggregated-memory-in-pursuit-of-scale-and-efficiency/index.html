@@ -393,12 +393,12 @@ Unsurprisingly, that&rsquo;s also the case for CXL.mem. Memory connected through
 interconnect will not be as quick to access as ordinary DIMMs due to inherent
 protocol costs. Since this is all upcoming technology, no one has yet
 published an official benchmark that would allow us to quantify the difference.
-However, it&rsquo;s expected that the difference will be similar to that of a local vs
-remote NUMA node access. At least for CXL attached DRAM. That&rsquo;s still plenty fast.
-But is it fast enough for applications not to notice if suddenly some of its
-memory accesses take twice (or more) as long? Only time will tell, but I&rsquo;m not
-so sure. For the most part, software that isn&rsquo;t NUMA-aware doesn&rsquo;t really scale
-all that well across sockets.</p>
+However, it&rsquo;s expected that the <a href=https://www.nextplatform.com/2021/09/07/the-cxl-roadmap-opens-up-the-memory-hierarchy/>difference will be similar to that of a local vs
+remote NUMA node access</a> [6]. At least for CXL attached DRAM.
+That&rsquo;s still plenty fast. But is it fast enough for applications not to notice
+if suddenly some of its memory accesses take twice (or more) as long? Only time
+will tell, but I&rsquo;m not so sure. For the most part, software that isn&rsquo;t
+NUMA-aware doesn&rsquo;t really scale all that well across sockets.</p>
 <h2 id=heterogeneous-memory-hierarchy>Heterogeneous memory hierarchy</h2>
 <p>In practice, the CXL.mem protocol expands the increasingly heterogeneous memory
 hierarchy of modern servers. The specific access latency of remote attached
@@ -413,10 +413,10 @@ called Heterogeneous Memory Attribute Table (HMAT), and it&rsquo;s part of the A
 HMAT exposes information required to determine the performance characteristics
 (latency, bandwidth) of a memory device (target) as accessed from a CPU or
 other I/O device (initiator).
-Operating systems can parse that table and <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>expose performance information</a> [6]
+Operating systems can parse that table and <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>expose performance information</a> [7]
 to user-space software.</p>
 <p>If you&rsquo;d like to learn more, we&rsquo;ve described HMAT in the context of memkind in
-an <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>earlier article</a> [7] on pmem.io.</p>
+an <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>earlier article</a> [8] on pmem.io.</p>
 <h2 id=implications-for-software>Implications for software</h2>
 <p>Armed with this knowledge, software should then be able to make informed data
 placement decisions - which memory allocations go where.
@@ -435,28 +435,28 @@ make, such as promotion policies or observing data access patterns beyond simple
 <p>Second, any genuinely transparent universal tiering solution would likely operate
 on pages. And pages are typically far larger than individual data objects.
 Especially nowadays, where memory capacities are increasing and using huge pages
-is <a href=https://research.google/pubs/pub50370/>often advisable to increase performance</a> [8]. You wouldn&rsquo;t
-want your OS constantly moving 2MB objects between different memory tiers.
+is <a href=https://research.google/pubs/pub50370/>often advisable to increase performance</a> [9]. You wouldn&rsquo;t
+want your OS constantly moving 2MB blocks between different memory tiers.
 Such transparent solutions, to work optimally, would have to be complemented
 by user-space software that considers the spatial locality of memory objects
 within a page during allocation (and probably beyond).</p>
 <h2 id=ongoing-software-enabling-efforts>Ongoing software enabling efforts</h2>
 <p>Ultimately, I think the best solutions are likely to consist of a kernel-level
 (or hypervisor-level) mechanism for memory migration between tiers and
-an optimized user-space software components to ensure hot and cold data is
+an optimized user-space software component to ensure hot and cold data is
 stored on separate pages. Both working together to maximize performance.
 And both are already being worked on by many different people.
-There are now <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>many Linux</a> [9] kernel
-<a href=https://lwn.net/Articles/860215/>memory tiering</a> [10] activities. And just as many user-space
+There are now <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>many Linux</a> [10] kernel
+<a href=https://lwn.net/Articles/860215/>memory tiering</a> [11] activities. And just as many user-space
 software projects trying to tackle page placement problems. Memkind among them.</p>
 <p><img src=/images/posts/cxl-user-kernel-malloc.png alt="CXL user/kernel malloc"></p>
 <p>That sounds all good and fine for volatile memory, where we care only about
 additional capacity and efficiency gains. But what about those named memory
 regions I mentioned earlier? In that case, software will need to be modified
-so that it can attach to existing regions instead of
-just allocating new ones. It would also likely need some logic to make safe
-updates to such regions. I hope that Persistent Memory Development Kit
-(PMDK) can serve those needs when they inevitably (hopefully :)) show up.</p>
+so that it can attach to existing regions instead of just allocating new ones.
+It would also likely need some logic to make safe updates to such regions.
+I hope that Persistent Memory Development Kit (PMDK) can serve those needs when
+they inevitably (hopefully :)) show up.</p>
 <p>And the master plan is revealed. Well, not really. But it&rsquo;s nice when things
 start to align.</p>
 <h2 id=references>References</h2>
@@ -465,11 +465,12 @@ start to align.</p>
 <p>[3] <a href=https://www.usenix.org/conference/nsdi17/technical-sessions/presentation/gu>Efficient Memory Disaggregation with Infiniswap</a></p>
 <p>[4] <a href=https://www.computeexpresslink.org/>Compute Express Link™: The Breakthrough CPU-to-Device Interconnect</a></p>
 <p>[5] <a href=https://business.kioxia.com/content/dam/kioxia/ncsa/en-us/business/asset/KIOXIA_EDSFF_Intro_White_Paper.pdf>KIOXIA Introducing the EDSFF E3 Family of Form Factors</a></p>
-<p>[6] <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>Linux kernel guide - NUMA Locality</a></p>
-<p>[7] <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>Memkind support for heterogeneous memory attributes</a></p>
-<p>[8] <a href=https://research.google/pubs/pub50370/>Beyond malloc efficiency to fleet efficiency: a hugepage-aware memory allocator</a></p>
-<p>[9] <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>Optimize Page Placement in Tiered Memory System</a></p>
-<p>[10] <a href=https://lwn.net/Articles/860215/>Migrate Pages in lieu of discard</a></p>
+<p>[6] <a href=https://www.nextplatform.com/2021/09/07/the-cxl-roadmap-opens-up-the-memory-hierarchy/>The CXL Roadmap Opens Up The Memory Hierarchy</a></p>
+<p>[7] <a href=https://www.kernel.org/doc/html/latest/admin-guide/mm/numaperf.html>Linux kernel guide - NUMA Locality</a></p>
+<p>[8] <a href=https://pmem.io/blog/2021/05/memkind-support-for-heterogeneous-memory-attributes/>Memkind support for heterogeneous memory attributes</a></p>
+<p>[9] <a href=https://research.google/pubs/pub50370/>Beyond malloc efficiency to fleet efficiency: a hugepage-aware memory allocator</a></p>
+<p>[10] <a href=https://linuxplumbersconf.org/event/11/contributions/967/attachments/811/1654/Optimize%20Page%20Placement%20in%20Tiered%20Memory%20System.pdf>Optimize Page Placement in Tiered Memory System</a></p>
+<p>[11] <a href=https://lwn.net/Articles/860215/>Migrate Pages in lieu of discard</a></p>
 <div class="tagcloud clearfix bottommargin">
 <a href=https://pmem.io/tags/cxl>CXL</a>
 <a href=https://pmem.io/tags/hmat>HMAT</a>
