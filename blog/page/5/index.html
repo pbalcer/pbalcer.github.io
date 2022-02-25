@@ -302,6 +302,66 @@
 <div class="grid-inner row g-0">
 <div class=col-md-4>
 <div class=entry-image>
+<a href=https://pmem.io/blog/2019/06/multi-level-vmemcache/ data-lightbox=image><img src=/images/pmem_logo.png alt="Multi-level vmemcache"></a>
+</div>
+</div>
+<div class="col-md-8 ps-md-4">
+<div class="entry-title title-sm">
+<h2><a href=https://pmem.io/blog/2019/06/multi-level-vmemcache/>Multi-level vmemcache</a></h2>
+</div>
+<div class=entry-meta>
+<ul>
+<li><i class=icon-calendar3></i> Jun 12, 2019</li>
+<li><i class=icon-user></i>Kilobyte</li>
+<li>
+<i class=icon-folder-open></i>
+Libvmemcache
+</li>
+</ul>
+</div>
+<div class=entry-content>
+<p>Introduction vmemcache which we have recently described performs close to optimum when either all keys are approximately equally likely to be queried, or when all key:value pairs fit completely into the fastest form of memory you are willing to use. But, in many workloads, some keys are “hot” and …</p>
+<a href=https://pmem.io/blog/2019/06/multi-level-vmemcache/ class=more-link>Read More</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id=posts class="row grid-container gutter-40">
+<div class="entry col-12">
+<div class="grid-inner row g-0">
+<div class=col-md-4>
+<div class=entry-image>
+<a href=https://pmem.io/blog/2019/05/libvmemcache-buffer-based-lru-cache/ data-lightbox=image><img src=/images/pmem_logo.png alt="libvmemcache - buffer-based LRU cache"></a>
+</div>
+</div>
+<div class="col-md-8 ps-md-4">
+<div class="entry-title title-sm">
+<h2><a href=https://pmem.io/blog/2019/05/libvmemcache-buffer-based-lru-cache/>libvmemcache - buffer-based LRU cache</a></h2>
+</div>
+<div class=entry-meta>
+<ul>
+<li><i class=icon-calendar3></i> May 7, 2019</li>
+<li><i class=icon-user></i>Ldorau</li>
+<li>
+<i class=icon-folder-open></i>
+Libvmemcache
+</li>
+</ul>
+</div>
+<div class=entry-content>
+<p>Introduction libvmemcache is a volatile key-value store optimized for operating on NVDIMM based space. However, it can work with any filesystem whether it is stored in memory (tmpfs) or on any storage device. Consequently, libvmemcache will be significantly less performant if it is stored on the …</p>
+<a href=https://pmem.io/blog/2019/05/libvmemcache-buffer-based-lru-cache/ class=more-link>Read More</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id=posts class="row grid-container gutter-40">
+<div class="entry col-12">
+<div class="grid-inner row g-0">
+<div class=col-md-4>
+<div class=entry-image>
 <a href=https://pmem.io/blog/2019/02/c-persistent-containers-vector/ data-lightbox=image><img src=/images/pmem_logo.png alt="C++ persistent containers - vector"></a>
 </div>
 </div>
@@ -388,68 +448,6 @@ Pmdk
 </div>
 </div>
 </div>
-<div id=posts class="row grid-container gutter-40">
-<div class="entry col-12">
-<div class="grid-inner row g-0">
-<div class=col-md-4>
-<div class=entry-image>
-<a href=https://pmem.io/blog/2019/01/extended-memcpy-in-pmdk-1.5/ data-lightbox=image><img src=/images/pmem_logo.png alt="Extended memcpy in PMDK 1.5"></a>
-</div>
-</div>
-<div class="col-md-8 ps-md-4">
-<div class="entry-title title-sm">
-<h2><a href=https://pmem.io/blog/2019/01/extended-memcpy-in-pmdk-1.5/>Extended memcpy in PMDK 1.5</a></h2>
-</div>
-<div class=entry-meta>
-<ul>
-<li><i class=icon-calendar3></i> Jan 22, 2019</li>
-<li><i class=icon-user></i>Marcinslusarz</li>
-<li>
-<i class=icon-folder-open></i>
-Memcpy
-</li>
-</ul>
-</div>
-<div class=entry-content>
-<p>In PMDK 1.5 we added new APIs for bulk persistent memory modifications. In short, we did this to:
-give applications the ability to perform low-level performance optimizations clean up the naming scheme In order to understand what exactly and why we did that, let’s review the old API. In PMDK …</p>
-<a href=https://pmem.io/blog/2019/01/extended-memcpy-in-pmdk-1.5/ class=more-link>Read More</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id=posts class="row grid-container gutter-40">
-<div class="entry col-12">
-<div class="grid-inner row g-0">
-<div class=col-md-4>
-<div class=entry-image>
-<a href=https://pmem.io/blog/2018/12/pool-features/ data-lightbox=image><img src=/images/pmem_logo.png alt="Pool features"></a>
-</div>
-</div>
-<div class="col-md-8 ps-md-4">
-<div class="entry-title title-sm">
-<h2><a href=https://pmem.io/blog/2018/12/pool-features/>Pool features</a></h2>
-</div>
-<div class=entry-meta>
-<ul>
-<li><i class=icon-calendar3></i> Dec 5, 2018</li>
-<li><i class=icon-user></i>Janekmi</li>
-<li>
-<i class=icon-folder-open></i>
-Pool_features
-</li>
-</ul>
-</div>
-<div class=entry-content>
-<p>Introduction Since the very first release, PMDK pools had internal feature flags. They were mostly a hidden implementation detail. The more observant users might have noticed pool features listing in pmempool info output, but that’s about it.
-Release 1.5 introduced a set of new feature flags. …</p>
-<a href=https://pmem.io/blog/2018/12/pool-features/ class=more-link>Read More</a>
-</div>
-</div>
-</div>
-</div>
-</div>
 <div class="col-12 mt-4">
 <ul class="pagination pagination-default">
 <li class=page-item>
@@ -506,24 +504,25 @@ Release 1.5 introduced a set of new feature flags. …</p>
 <h4 class="fw-normal mt-2"><a href=/blogs/llpl/ class=text-capitalize>llpl (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/macros/ class=text-capitalize>macros (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/memcpy/ class=text-capitalize>memcpy (1)</a></h4>
-<h4 class="fw-normal mt-2"><a href=/blogs/memkeydb/ class=text-capitalize>memkeydb (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/memkind/ class=text-capitalize>memkind (4)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/model/ class=text-capitalize>model (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/multithreaded/ class=text-capitalize>multithreaded (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/mysql/ class=text-capitalize>mysql (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/perf300/ class=text-capitalize>perf300 (2)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/performance/ class=text-capitalize>performance (1)</a></h4>
-<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (8)</a></h4>
+<h4 class="fw-normal mt-2"><a href=/blogs/pmdk/ class=text-capitalize>pmdk (9)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem/ class=text-capitalize>pmem (4)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem.io/ class=text-capitalize>pmem.io (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmem_emulation/ class=text-capitalize>pmem_emulation (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmemcheck/ class=text-capitalize>pmemcheck (2)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmemkv/ class=text-capitalize>pmemkv (5)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmemobjfs/ class=text-capitalize>pmemobjfs (1)</a></h4>
+<h4 class="fw-normal mt-2"><a href=/blogs/pmemstream/ class=text-capitalize>pmemstream (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pmreorder/ class=text-capitalize>pmreorder (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/pool_features/ class=text-capitalize>pool_features (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/replication/ class=text-capitalize>replication (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/report/ class=text-capitalize>report (4)</a></h4>
+<h4 class="fw-normal mt-2"><a href=/blogs/tieredmemdb/ class=text-capitalize>tieredmemdb (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/translation/ class=text-capitalize>translation (1)</a></h4>
 <h4 class="fw-normal mt-2"><a href=/blogs/vmem/ class=text-capitalize>vmem (1)</a></h4>
 </div>
@@ -550,7 +549,10 @@ Release 1.5 introduced a set of new feature flags. …</p>
 <a href=/tags/secure-erase class=block role=button>secure-erase</a>
 <a href=/tags/sql class=block role=button>sql</a>
 <a href=/tags/2019 class=block role=button>2019</a>
+<a href=/tags/async class=block role=button>async</a>
+<a href=/tags/asynchronous class=block role=button>asynchronous</a>
 <a href=/tags/blogs class=block role=button>blogs</a>
+<a href=/tags/concurrency class=block role=button>concurrency</a>
 <a href=/tags/crash class=block role=button>crash</a>
 <a href=/tags/create class=block role=button>create</a>
 <a href=/tags/cxl class=block role=button>cxl</a>
@@ -558,13 +560,10 @@ Release 1.5 introduced a set of new feature flags. …</p>
 <a href=/tags/destroy class=block role=button>destroy</a>
 <a href=/tags/developer class=block role=button>developer</a>
 <a href=/tags/direct-access class=block role=button>direct-access</a>
+<a href=/tags/dml class=block role=button>dml</a>
+<a href=/tags/dsa class=block role=button>dsa</a>
 <a href=/tags/emulate class=block role=button>emulate</a>
 <a href=/tags/fpga class=block role=button>fpga</a>
-<a href=/tags/fsck class=block role=button>fsck</a>
-<a href=/tags/gpu class=block role=button>gpu</a>
-<a href=/tags/hang class=block role=button>hang</a>
-<a href=/tags/hmat class=block role=button>hmat</a>
-<a href=/tags/how-to class=block role=button>how-to</a>
 </div>
 </div>
 </div>
