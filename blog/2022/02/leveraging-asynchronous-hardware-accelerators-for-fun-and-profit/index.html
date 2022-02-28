@@ -322,7 +322,7 @@ page caching or buffering. And now enter Persistent Memory, where the most
 natural way of accessing it is asynchronously with the CPU. This creates a mismatch
 in storage use cases between what the software expects, an offloaded
 background I/O operation, and what is actually happening, a synchronous memory copy.</p>
-<p>// picture showing a disk that uses DMA, and PMem that uses CPU</p>
+<p><img src=/images/posts/async-dma-pmem.png alt="dma pmem"></p>
 <p>This mismatch manifests itself in the form of increased CPU usage when using PMem
 as a block device. So you might be getting higher throughput and lower latency
 in benchmarks but at the cost of increased CPU utilization.</p>
@@ -345,7 +345,7 @@ multiple users or dedicated to exclusive use by a single one. Once configured,
 applications can access each work queue by mapping a special character device
 exposed by the kernel. This map can then be used to directly submit work using
 specialized instructions, <code>MOVDIR64B</code> or <code>ENQCMD</code>.</p>
-<p>// simplified DSA architecture diagram</p>
+<p><img src=/images/posts/async-dsa-arch.png alt="dma pmem"></p>
 <p>On completion of each work item, the hardware will store a completion record into
 a designated address. Software can also optionally request a completion interrupt,
 but user-space applications will need to carefully weigh the costs of using
@@ -414,8 +414,7 @@ block storage like described at the beginning of this article or
 network interfaces. APIs like <a href=https://man7.org/linux/man-pages/man7/epoll.7.html><code>epoll</code></a>, or lately <a href=https://kernel.dk/io_uring.pdf><code>io_uring</code></a>,
 have enabled developers to create highly efficient systems that minimize waiting
 time and allow many tasks to be performed concurrently by one or more threads.</p>
-<p>// picture showing the difference between
-// concurrent execution and normal threaded one</p>
+<p><img src=/images/posts/async-sync-vs-async.png alt="dma pmem"></p>
 <p>Programming languages are also increasingly capable of natively expressing
 asynchronous semantics. High-level languages started this trend, but lower-level
 ones such as <a href=https://en.cppreference.com/w/cpp/language/coroutines>C++, with coroutines</a>,
@@ -458,8 +457,7 @@ their idiosyncrasies that make them incompatible with each other.</p>
 But libraries that want to expose asynchronous functions have it
 more difficult. It&rsquo;s hard to create higher-level functions that compose regular
 host CPU code and DSA operations.</p>
-<p>// picture showing of an example of async function that&rsquo;s composed of some cpu code,
-// dml jobs, and more cpu code.</p>
+<p><img src=/images/posts/async-function.png alt="dma pmem"></p>
 <p>And so when we first started thinking about introducing asynchronous
 operations in the various libraries in <a href=https://github.com/pmem/pmdk>Persistent Memory Development Kit (PMDK)</a>,
 beyond just an async memcpy implementation, we found ourselves in a precarious
@@ -475,7 +473,7 @@ in software that already uses an existing concurrency framework. Interoperabilit
 with other languages was also an objective - the C++ example I&rsquo;ve included above
 was originally implemented using miniasync.</p>
 <p>And no relying on dark arts :)</p>
-<p>// picture of miniasync architecture</p>
+<p><img src=/images/posts/async-miniasync.png alt="dma pmem"></p>
 <p>Our new library, libminiasync, accomplishes those goals by providing a minimal
 abstraction of a <code>future</code> that represents an asynchronous task. At its core,
 it&rsquo;s simply a function (polling method) with some associated state and
