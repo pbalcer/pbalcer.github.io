@@ -345,7 +345,7 @@ multiple users or dedicated to exclusive use by a single one. Once configured,
 applications can access each work queue by mapping a special character device
 exposed by the kernel. This map can then be used to directly submit work using
 specialized instructions, <code>MOVDIR64B</code> or <code>ENQCMD</code>.</p>
-<p><img src=/images/posts/async-dsa-arch.png alt="dma pmem"></p>
+<p><img src=/images/posts/async-dsa-arch.png alt="dsa block diagram"></p>
 <p>On completion of each work item, the hardware will store a completion record into
 a designated address. Software can also optionally request a completion interrupt,
 but user-space applications will need to carefully weigh the costs of using
@@ -409,12 +409,12 @@ in the background, allowing the CPU to do something else while the copy is
 taking place. Admittedly, this is not as simple as just <code>memcpy</code>, but it does
 provide more powerful asynchronous semantics.</p>
 <h2 id=the-async-ecosystem>The async ecosystem</h2>
-<p>Contemporary software is used to dealing with asynchronous I/O devices. Be it
+<p>Programmers are used to dealing with asynchronous I/O devices. Be it
 block storage like described at the beginning of this article or
 network interfaces. APIs like <a href=https://man7.org/linux/man-pages/man7/epoll.7.html><code>epoll</code></a>, or lately <a href=https://kernel.dk/io_uring.pdf><code>io_uring</code></a>,
 have enabled developers to create highly efficient systems that minimize waiting
 time and allow many tasks to be performed concurrently by one or more threads.</p>
-<p><img src=/images/posts/async-sync-vs-async.png alt="dma pmem"></p>
+<p><img src=/images/posts/async-sync-vs-async.png alt="sync vs async comparision"></p>
 <p>Programming languages are also increasingly capable of natively expressing
 asynchronous semantics. High-level languages started this trend, but lower-level
 ones such as <a href=https://en.cppreference.com/w/cpp/language/coroutines>C++, with coroutines</a>,
@@ -457,7 +457,7 @@ their idiosyncrasies that make them incompatible with each other.</p>
 But libraries that want to expose asynchronous functions have it
 more difficult. It&rsquo;s hard to create higher-level functions that compose regular
 host CPU code and DSA operations.</p>
-<p><img src=/images/posts/async-function.png alt="dma pmem"></p>
+<p><img src=/images/posts/async-function.png alt="async function example"></p>
 <p>And so when we first started thinking about introducing asynchronous
 operations in the various libraries in <a href=https://github.com/pmem/pmdk>Persistent Memory Development Kit (PMDK)</a>,
 beyond just an async memcpy implementation, we found ourselves in a precarious
@@ -473,7 +473,7 @@ in software that already uses an existing concurrency framework. Interoperabilit
 with other languages was also an objective - the C++ example I&rsquo;ve included above
 was originally implemented using miniasync.</p>
 <p>And no relying on dark arts :)</p>
-<p><img src=/images/posts/async-miniasync.png alt="dma pmem"></p>
+<p><img src=/images/posts/async-miniasync.png alt="miniasync architecture"></p>
 <p>Our new library, libminiasync, accomplishes those goals by providing a minimal
 abstraction of a <code>future</code> that represents an asynchronous task. At its core,
 it&rsquo;s simply a function (polling method) with some associated state and
@@ -528,7 +528,7 @@ to make its own decisions regarding the execution and scheduling of the futures.
 Some applications might need complex job-stealing scheduling runtimes, whereas
 some will be satisfied with simpler single-threaded ones. Existing software
 might want to rely on some execution system that it already uses
-(e.g., [an SPDK reactor][<a href=https://spdk.io/doc/scheduler.html>spdk-scheduler</a>]).
+(e.g., <a href=https://spdk.io/doc/scheduler.html>an SPDK reactor</a>).
 Miniasync supports all these use cases. However, we didn&rsquo;t want to
 leave it at that and not provide any runtime whatsoever. That&rsquo;s why miniasync
 will initially ship with a simple single-threaded runtime that supports
