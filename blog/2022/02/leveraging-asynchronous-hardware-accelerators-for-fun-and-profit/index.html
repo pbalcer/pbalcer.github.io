@@ -5,8 +5,8 @@
 PMem as storage impedance mismatch The reason for that is simple - block storage I/O is typically asynchronous due to relatively high latency and high queue depths required to reach optimal throughputs.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://pmem.io/blog/2022/02/leveraging-asynchronous-hardware-accelerators-for-fun-and-profit/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2022-02-21T15:20:43+01:00">
-<meta property="article:modified_time" content="2022-02-21T15:20:43+01:00">
+<meta property="article:published_time" content="2022-02-28T10:00:00+00:00">
+<meta property="article:modified_time" content="2022-02-28T10:00:00+00:00">
 <meta charset=utf-8>
 <link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
@@ -299,7 +299,7 @@ PMem as storage impedance mismatch The reason for that is simple - block storage
 </div>
 <div class=entry-meta>
 <ul>
-<li><i class=icon-calendar3></i> 21 Feb, 2022</li>
+<li><i class=icon-calendar3></i> 28 Feb, 2022</li>
 <li><i class=icon-user></i> Piotr Balcer</li>
 <li>
 <i class=icon-folder-open></i>
@@ -317,7 +317,7 @@ access latency.</p>
 to relatively high latency and high queue depths required to reach optimal
 throughputs. This led to software being optimized for concurrent access to the
 storage devices, either directly through the use of asynchronous APIs such as
-io_uring or by indirectly by relaying on kernel&rsquo;s builtin mechanisms such as
+io_uring or indirectly by relying on kernel&rsquo;s builtin mechanisms such as
 page caching or buffering. And now enter Persistent Memory, where the most
 natural way of using it is synchronously with the CPU. This creates a mismatch
 in storage use cases between what the software is expecting, an offloaded
@@ -326,18 +326,18 @@ background I/O operation, and what is actually happening, a synchronous memory c
 <p>This mismatch manifests itself in the form of increased CPU usage when using PMem
 as a block device. So you might be getting higher throughput and lower latency
 in benchmarks, but at the cost of increased CPU utilization.</p>
-<p>Now, you can optimize certainly software by changing it to use a more
+<p>Now, you can certainly optimize software by changing it to use a more
 memory-centric approach to Persistent Memory. But that&rsquo;s a lot of work.
 And sometimes you just need to do bulk data transfers. Other times // XXX: ugly sentence
 asynchronous approach to memory transfers simply makes more sense.</p>
 <p>Thankfully, starting in the next generation Xeon (Sapphire Rapids), the
 platform will gain the ability to offload some of its memory operations through
-the use of a builtin DMA engine - <a href=https://01.org/blogs/2019/introducing-intel-data-streaming-accelerator>Intel Data Streaming Accelerator (Intel DSA)</a>.</p>
+the use of a builtin DMA engine - <a href=https://01.org/blogs/2019/introducing-intel-data-streaming-accelerator>Intel® Data Streaming Accelerator (Intel DSA)</a>.</p>
 <h2 id=data-streaming-accelerator>Data Streaming Accelerator</h2>
 <p>DSA enables user-space software to quickly and efficiently perform a background
-memory operation. Among supported supported operations are
-memory move (aka <code>memcpy</code>), memory fill (aka <code>memset</code>) , cache flush, and memory
-compare (aka <code>memcpy</code>). The <a href=https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification>DSA specification</a> contains the full list.
+memory operation. Among supported operations are memory move (aka <code>memcpy</code>),
+memory fill (aka <code>memset</code>) , cache flush, and memory compare (aka <code>memcpy</code>).
+The <a href=https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification>DSA specification</a> contains the full list.
 This accelerator essentially makes it feasible for software to offload from the
 CPU even small memory operations.</p>
 <p>To use DSA, the system needs to configure groups that are composed of
@@ -345,12 +345,12 @@ work queues and execution engines. Work queues can be either shared between
 multiple users or dedicated for exlusive use by a single one. Once configured,
 applications can access each work queue by mapping a special character device
 exposed by the kernel. This map can then be used to directly submit work using
-specialized instructions, MOVDIR64b or ENQCMD.</p>
+specialized instructions, <code>MOVDIR64B</code> or <code>ENQCMD</code>.</p>
 <p>// simplified DSA architecture diagram</p>
 <p>On completion of each work item, a completion record is stored into designated
 address. Software can also optionally request completion interrupt,
 but user-space applications will need to carefully weigh the costs of using
-such approach. Especially in the case of smallish transfers.</p>
+such approach. Especially in the case of small transfers.</p>
 <p>To optimize busy polling on completion records, new CPUs will provide <a href="https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=umwait">new
 instructions</a> that will allow software to implement
 low power waiting schemes, potentially
@@ -364,8 +364,8 @@ to memory-related algorithms in databases, garbage collection and more.</p>
 program to raw device interfaces, but instead will be able to leverage libraries
 that provide convienient and easy to use APIs to asynchronous data movement. One
 such solution is <a href=https://github.com/intel/dml>Data Mover Library (DML)</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>
-<span style=color:#a6e22e>do_async_memcpy</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>dst, <span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>src, size_t n)
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>
+<span style=color:#a6e22e>do_async_memcpy</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>dst, <span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>src, size_t n, useful_work_fn useful_work)
 {
     dml_status_t status;
     <span style=color:#66d9ef>uint32_t</span> job_size;
@@ -389,9 +389,10 @@ such solution is <a href=https://github.com/intel/dml>Data Mover Library (DML)</
     status <span style=color:#f92672>=</span> dml_submit_job(dml_job);
     assert(status <span style=color:#f92672>==</span> DML_STATUS_OK);
     <span style=color:#75715e>/* now we can either wait or do something else and check completion later */</span>
-    <span style=color:#66d9ef>if</span> (has_useful_work) {
+    <span style=color:#66d9ef>if</span> (useful_work <span style=color:#f92672>!=</span> NULL) {
         <span style=color:#66d9ef>do</span> {
             <span style=color:#75715e>/* ...doing some useful work... */</span>
+            useful_work(...);
         } (dml_check_job(dml_job) <span style=color:#f92672>!=</span> DML_STATUS_OK);
     } <span style=color:#66d9ef>else</span> {
         <span style=color:#75715e>/* if there&#39;s nothing else to do, let&#39;s wait */</span>
@@ -401,7 +402,7 @@ such solution is <a href=https://github.com/intel/dml>Data Mover Library (DML)</
     <span style=color:#66d9ef>return</span> dst;
 }
 </code></pre></div><blockquote>
-<p>A C++ version is also available. See the <a href=https://github.com/intel/dml>DML github</a> page for details</p>
+<p>A C++ version is also available. See the <a href=https://github.com/intel/dml>DML github</a> page for details.</p>
 </blockquote>
 <p>The above code snippet will setup a job that will perform a memory move operation
 in the background, allowing the CPU to do something else while the copy is
@@ -410,17 +411,16 @@ provide more powerful asynchronous semantics.</p>
 <h2 id=the-async-ecosystem>The async ecosystem</h2>
 <p>Contemporary software is used to dealing with asynchronous I/O devices. Be it
 block storage like described at the beginning of this article or
-network interfaces. Interfaces like <a href=https://man7.org/linux/man-pages/man7/epoll.7.html><code>epoll</code></a>,
-or lately <a href=https://kernel.dk/io_uring.pdf><code>io_uring</code></a>, have enabled developers to create highly
-efficient systems that minimize waiting time and enable many tasks to be
-performed concurrently by one or more threads.</p>
+network interfaces. APIs like <a href=https://man7.org/linux/man-pages/man7/epoll.7.html><code>epoll</code></a>, or lately <a href=https://kernel.dk/io_uring.pdf><code>io_uring</code></a>,
+have enabled developers to create highly efficient systems that minimize waiting
+time and enable many tasks to be performed concurrently by one or more threads.</p>
 <p>// picture showing the difference between
 // concurrent execution and normal threaded one</p>
 <p>Programming languages are also increasingly capable of natively expressing
-asynchronous semantics. Higher level languages started this trend, but lower
-level languages such as <a href=https://en.cppreference.com/w/cpp/language/coroutines>C++, with coroutines</a>,
+asynchronous semantics. High level languages started this trend, but lower
+level one such as <a href=https://en.cppreference.com/w/cpp/language/coroutines>C++, with coroutines</a>,
 and <a href=https://blog.rust-lang.org/2019/11/07/Async-await-stable.html>Rust, with <code>async/await</code></a> are following suit.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c++ data-lang=c++>task
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C++ data-lang=C++>task
 <span style=color:#a6e22e>async_useful_work</span>(executor_type <span style=color:#f92672>&amp;</span>executor)
 {
     <span style=color:#75715e>/* perform some useful compute work */</span>
@@ -442,7 +442,7 @@ task
 </code></pre></div><p>As you can see from the example above, the new asynchronous semantics in C++20
 provide composable abstraction for concurrent work that is well suited for the
 new DSA hardware capabilities.</p>
-<p>These modern semantics enable programmers to create readable and efficient
+<p>These modern approaches enable programmers to create readable and efficient
 programs that take advantage of background processing. And they also allow
 library developers to expose complex asynchronous functions that can be executed
 concurrently, without breaking up functions into multiple smaller ones or
@@ -467,23 +467,23 @@ position. We didn&rsquo;t want for whatever we come up with to be tied to one pa
 framework, and we also wanted to avoid implementing our own highly-elaborate
 concurrency solution.</p>
 <p>What we ended up creating is somewhere in between - <a href=https://github.com/pmem/miniasync>libminiasync</a>.</p>
-<h2 id=lbiminiasync>lbiminiasync</h2>
+<h2 id=libminiasync>libminiasync</h2>
 <p>Our goal was to provide an easy-to-use and flexible mechanism for applications
-and library developers to compose and concurrently run higher-level asynchronous
-tasks. We also needed to make sure that our solution was platform agnostic and usable
+and libraries to compose and concurrently run higher-level asynchronous tasks.
+We also needed to make sure that our solution was platform agnostic and usable
 in software that already uses an existing concurrency framework. Interoperability
 with other languages was also an objective - the C++ example I&rsquo;ve included above
 was originally implemented using miniasync.</p>
-<p>And no relaying dark arts :)</p>
+<p>And no relying on dark arts :)</p>
 <p>// picture of miniasync architecture</p>
 <p>Our new library, libminiasync, accomplishes those goals by providing a minimal
-abstraction of a <code>future</code> that represents an asynchronous task. At it&rsquo;s very core,
+abstraction of a <code>future</code> that represents an asynchronous task. At its core,
 it&rsquo;s simply a function (polling method) with some associated state and
 the ability to chain execution of functions into larger futures. So it&rsquo;s nothing
 particularly inventive, but it&rsquo;s fairly straighforward and has almost no overhead.
 Futures that implement the miniasync&rsquo;s abstraction can also be used in conjunction
 with almost any other concurrency framework.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>/* define a future with chain of other futures */</span>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=color:#75715e>/* define a future with chain of other futures */</span>
 <span style=color:#66d9ef>struct</span> memcpy_then_useful_work_data {
     FUTURE_CHAIN_ENTRY(<span style=color:#66d9ef>struct</span> vdm_operation_fut, memcpy);
     FUTURE_CHAIN_ENTRY(<span style=color:#66d9ef>struct</span> async_useful_work, work);
@@ -514,7 +514,7 @@ task <span style=color:#f92672>=</span> async_memcpy_then_useful_work(dml_mover,
     <span style=color:#75715e>/* pause... */</span>
 }
 </code></pre></div><blockquote>
-<p>Based on the <a href=https://github.com/pmem/miniasync/blob/master/examples/basic/basic.c>&lsquo;basic&rsquo;</a> miniasync example</p>
+<p>Based on the <a href=https://github.com/pmem/miniasync/blob/master/examples/basic/basic.c>&lsquo;basic&rsquo;</a> miniasync example.</p>
 </blockquote>
 <p>Defining a future requires some boilerplate, but that&rsquo;s done, its use is very
 straighforward. Software can just instantiate the future and execute it. We
@@ -533,10 +533,10 @@ are supported by miniasync. However, we didn&rsquo;t want to leave it at that an
 provide any runtime whatsoever. That&rsquo;s why miniasync will initially ship with
 a simple single-threaded runtime that will support concurrent execution of
 futures.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=color:#66d9ef>struct</span> async_memcpy_and_useful_work_fut task;
-task[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> async_memcpy_then_useful_work(dml_mover, buf_b, buf_a, testbuf_size);
-task[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> async_memcpy_then_useful_work(dml_mover, buf_b, buf_a, testbuf_size);
-<span style=color:#75715e>/* this drives both futures to completion using their polling implementations */</span>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=color:#66d9ef>struct</span> async_memcpy_and_useful_work_fut tasks[<span style=color:#ae81ff>2</span>];
+tasks[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> async_memcpy_then_useful_work(dml_mover, buf_b, buf_a, testbuf_size);
+tasks[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> async_memcpy_then_useful_work(dml_mover, buf_b, buf_a, testbuf_size);
+<span style=color:#75715e>/* this drives both futures to completion using the runtime */</span>
 runtime_wait_all(runtime, (<span style=color:#66d9ef>struct</span> future <span style=color:#f92672>*</span>)tasks, <span style=color:#ae81ff>2</span>);
 </code></pre></div><p>We are also thinking about creating a multi-threaded runtime that would
 distribute the futures across multiple threads. Reach out if you&rsquo;d like to
@@ -545,29 +545,29 @@ see that.</p>
 <p>The primary thing that we are enabling with all this effort is of course the
 use of DSA in the PMDK libraries. So as part of miniasync we are also implementing
 a virtual data mover (vdm) abstraction.</p>
-<pre tabindex=0><code>struct data_mover_dml *dmd = data_mover_dml_new();
-assert(dmd != NULL);
-struct vdm *mover = data_mover_dml_get_vdm(dmd);
-struct vdm_operation_future a_to_b =
-    vdm_memcpy(mover, buf_b, buf_a, buf_size, 0);
-<p>runtime_wait(r, FUTURE_AS_RUNNABLE(&amp;a_to_b));
-</code></pre><p>The purpose of vdm is to provide a common interface for asynchronous memory
-operations. Software can then be written once using the vdm abstraction but
-at runtime use various implementations based on its needs and the capabilities
-of the platform that its running on. For example, an application that uses
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=color:#75715e>/* instantiate a new concrete data mover based on DML */</span>
+<span style=color:#66d9ef>struct</span> data_mover_dml <span style=color:#f92672>*</span>dmd <span style=color:#f92672>=</span> data_mover_dml_new();
+assert(dmd <span style=color:#f92672>!=</span> NULL);
+<span style=color:#66d9ef>struct</span> vdm <span style=color:#f92672>*</span>mover <span style=color:#f92672>=</span> data_mover_dml_get_vdm(dmd);
+<span style=color:#66d9ef>struct</span> vdm_operation_future a_to_b <span style=color:#f92672>=</span>
+    vdm_memcpy(mover, buf_b, buf_a, buf_size, <span style=color:#ae81ff>0</span>);
+<p>runtime_wait(r, FUTURE_AS_RUNNABLE(<span style=color:#f92672>&amp;</span>a_to_b));
+</code></pre></div><p>The purpose of vdm is to provide a common interface for asynchronous memory
+operations. Software can then be written once using the vdm abstraction but,
+at runtime, choose between various implementations based on its needs and the
+capabilities of the platform that its running on. For example, an application that uses
 SPDK and runs on an Intel platform might want to use an <a href=https://spdk.io/doc/accel_fw.html>SPDK-based DSA</a>
 implementation whereas a generic multi-platform application might want to dynamically
 choose between a software fallback or a platform-specific accelerator (e.g., DSA through DML).</p></p>
 <h2 id=more-to-come>More to come</h2>
 <p>The libminiasync software I&rsquo;ve described above is still work in progress. If you
-are interested in learning more, please see our <a href=https://github.com/pmem/miniasync>github page</a>.
+are interested in learning more, please see miniasync&rsquo;s <a href=https://github.com/pmem/miniasync>github page</a>.
 We&rsquo;d also love to hear any feedback about our efforts, so don&rsquo;t hesitate to
 reach out.</p>
 <p>In the next article, coming soon, we will describe how miniasync integrates
 with libpmem2 and the plans for integration in the rest of PMDK. We will also
 circle back to the block storage on PMem problem that I started with by exploring
-an example implementation of asynchronous pmemblk operations.</p>
-<h2 id=references>References</h2>
+an example implementation of asynchronous <a href=https://pmem.io/blog/2014/09/using-the-block-translation-table-for-sector-atomicity/>pmemblk</a> operations.</p>
 <div class="tagcloud clearfix bottommargin">
 <a href=https://pmem.io/tags/miniasync>miniasync</a>
 <a href=https://pmem.io/tags/pmem2>pmem2</a>
