@@ -1,7 +1,7 @@
 <!doctype html><html dir=ltr lang=en-us><head>
 <link rel=stylesheet type=text/css href=/css/style.css>
 <meta property="og:title" content="New upcoming asynchronous interfaces in PMDK libraries">
-<meta property="og:description" content="In the previous article, I wrote about a new upcoming Xeon platform feature, Data Streaming Accelerator (DSA) - a memory-to-memory DMA engine, and what opportunities and challenges it presents. I outlined the approach we are taking in PMDK to expose asynchronous APIs that can take advantage of this new hardware. Lastly, I introduced libminiasync, which is our framework for abstracting asynchronous operations.
+<meta property="og:description" content="In the previous article, I wrote about a new upcoming Xeon platform feature, Data Streaming Accelerator (DSA) - a memory-to-memory DMA engine, and what opportunities and challenges it presents. I outlined the approach we are taking in Persistent Memory Development Kit (PMDK) to expose asynchronous APIs that can take advantage of this new hardware. Lastly, I introduced libminiasync, which is our framework for abstracting asynchronous operations.
 This time, I will discuss how miniasync is being used in libpmem2 and our plans for its integration into the rest of PMDK libraries.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://pmem.io/blog/2022/05/new-upcoming-asynchronous-interfaces-in-pmdk-libraries/"><meta property="article:section" content="blog">
@@ -310,10 +310,10 @@ PMDK
 <div class="entry-content mt-0">
 <p>In the <a href=https://pmem.io/blog/2022/02/leveraging-asynchronous-hardware-accelerators-for-fun-and-profit/>previous article</a>, I wrote about a new upcoming Xeon platform feature,
 Data Streaming Accelerator (DSA) - a memory-to-memory DMA engine, and what opportunities
-and challenges it presents. I outlined the approach we are taking in PMDK
-to expose asynchronous APIs that can take advantage of this new hardware. Lastly,
-I introduced libminiasync, which is our framework for abstracting asynchronous
-operations.</p>
+and challenges it presents. I outlined the approach we are taking in
+Persistent Memory Development Kit (PMDK) to expose asynchronous APIs that can
+take advantage of this new hardware. Lastly, I introduced libminiasync, which
+is our framework for abstracting asynchronous operations.</p>
 <p>This time, I will discuss how miniasync is being used in libpmem2 and our plans for its integration into the rest of PMDK libraries.</p>
 <h2 id=technical-considerations-for-supporting-new-hardware-or-os-features-in-pmdk>Technical considerations for supporting new hardware or OS features in PMDK</h2>
 <p>PMDK is a sizable collection of existing tools and libraries. It supports various
@@ -323,13 +323,14 @@ requires careful deliberation to ensure our software remains usable for our
 existing users, no matter the platform they are using or the upgrade path they
 are taking. We also need to make sure that any software abstractions for hardware
 features we introduce aren&rsquo;t tied to any particular implementation. This is
-especially important for any public interfaces since they are very hard
+especially important for any public interfaces since they are hard
 to change after release.</p>
-<p>With DSA, we have a perfect storm - it&rsquo;s both a new hardware feature and a
+<p>With DSA, we have the perfect storm - it&rsquo;s both a new hardware feature and a
 capability that requires a fairly extensive public interface. We also
 cannot pick just one software implementation like DML to help us with our
 abstraction, since we already know that there are potential users that might
 wish to leverage an alternative software layer, like the one provided in SPDK.</p>
+<p><img src=/images/posts/async-2-overview.png alt=overview></p>
 <p>With all that in mind, we&rsquo;ve created miniasync - a fairly generic abstraction
 for asynchronous operations. It allows us to create public APIs in PMDK libraries
 that operate purely on abstract asynchronous functions, with the actual data
@@ -401,6 +402,7 @@ of <a href=https://pmem.io/blog/2014/09/using-the-block-translation-table-for-se
 storage has an additional cost of using the CPU to perform the actual
 I/O. This also applies to libpmemblk. Thankfully, with DSA and miniasync, we can
 address this problem.</p>
+<p><img src=/images/posts/async-2-pmemblk.png alt=overview></p>
 <p>Logically, a write in the BTT algorithm I mentioned earlier is composed
 of four steps:</p>
 <ol>
