@@ -6,7 +6,9 @@ in the heterogeneous memory space. While the transition from
 Persistent Memory (PMem) to CXL.mem may seem challenging at first, developers who have
 optimized their applications for PMem will find that no significant changes
 may be required. In this article, we will explore the CXL software ecosystem
-and its compatibility with the established PMem concepts and libraries.</p><p>CXL.mem software support in operating systems and applications is an evolution
+and its compatibility with the established PMem concepts and libraries.</p><p>Because CXL Type 3 (memory) devices can provide both volatile or persistent capacity,
+it should be possible to transition from PMem to CXL no matter the use case. See
+the table below for a break-down of different possible configurations.</p><table class="table table-striped table-bordered"><thead><tr><th>CXL Memory Configuration</th><th>Administrative steps</th><th>Use cases</th><th>Programming model<br>(same as PMem)</th></tr></thead><tbody><tr><td><b><i>Default</i></b><br>Global volatile memory<br>(system ram as NUMA)</td><td>None.</td><td>Adding more volatile memory capacity, potentially with software tiering.</td><td>Unmodified apps: Traditional memory management, OS-managed NUMA locality.<br>Modified apps: Speciality NUMA allocators (e.g., <code>libnuma</code>, <code>memkind</code>).<br>All apps: Direct use of <code>mmap</code>/<code>mbind</code>.</td></tr><tr><td>Volatile devdax</td><td>Reconfiguring namespace to devdax.</td><td>Adding new isolated memory capacity, manual tiering.</td><td>Speciality allocators capable of operating on raw memory ranges (e.g., <code>memkind</code>),<br>manual use of <code>mmap</code>.</td></tr><tr><td>Persistent fsdax</td><td>Configuring pmem region<br>and fsdax namespace.</td><td>Existing PMem-aware or storage-based software that uses regular files.</td><td>SNIA Persistent Memory Programming Model.<br>Unmodified apps just work. New ones can use PMDK.</td></tr><tr><td>Persistent devdax</td><td>Configuring pmem region<br>and devdax namespace.</td><td>Custom software requiring full control of memory.</td><td>Raw access through <code>mmap</code>, can flush using CPU instructions. Apps can use PMDK.</td></tr></tbody></table><p>CXL.mem software support in operating systems and applications is an evolution
 of the ecosystem developed for Persistent Memory. Developers that have invested
 time to optimize their applications for PMem will be happy to know
 that most software will require no changes to adapt to CXL.mem.</p><p>Linux developers have already started the process of creating CXL drivers
@@ -19,7 +21,8 @@ utilizing PMem through fsdax or devdax will seamlessly function without
 requiring modifications.</p><p>However, the introduction of CXL memory devices brings an important change relevant
 to system administrators. Unlike Persistent Memory, where the regions
 are statically defined by ACPI, CXL memory regions are dynamic. As a result,
-an additional configuration step is now necessary to create these regions when needed.</p><p>Although work on CXL support in Linux is still ongoing, some initial support
+an additional configuration step might now be necessary to create these regions when needed.
+For volatile memory, this is handled performed automatically.</p><p>Although work on CXL support in Linux is still ongoing, some initial support
 has been released in the upstream kernel. Enabling CXL is just one kernel
 configuration option away. Notably, having physical CXL-capable hardware is not
 required, as qemu also already includes some CXL features. It&rsquo;s important
@@ -27,7 +30,9 @@ to keep in mind that the CXL software ecosystem is still in its early stages, so
 bugs and missing features should be expected. However, motivated developers
 can already experiment with the existing capabilities. If you are interested
 in playing with emulated CXL for yourself, head over to Steve Scargall&rsquo;s
-<a href=https://stevescargall.com/blog/2022/01/20/how-to-emulate-cxl-devices-using-kvm-and-qemu/>How To Emulate CXL Devices using KVM and QEMU</a> blog post.</p><h2 id=system-topology-with-cxl>System topology with CXL</h2><p>Now, let&rsquo;s look into how the system topology changes with the introduction of CXL.
+<a href=https://stevescargall.com/blog/2022/01/20/how-to-emulate-cxl-devices-using-kvm-and-qemu/>How To Emulate CXL Devices using KVM and QEMU</a> blog post.
+Additionally, the <a href=https://github.com/pmem/run_qemu>run_qemu</a> github repository contains a set of
+scripts that might also be useful when configuring an emulated system from scratch.</p><h2 id=system-topology-with-cxl>System topology with CXL</h2><p>Now, let&rsquo;s look into how the system topology changes with the introduction of CXL.
 If you&rsquo;re already familiar with Persistent Memory and how it is exposed
 to applications, you&rsquo;ll find that very little is new. The overall structure remains the same.</p><p><img src=/images/posts/cxl-stack.png alt=overview></p><p>Memory regions are created from one or more devices, potentially with interleaving.
 In the case of CXL, memory regions can be configured as either RAM for volatile use
